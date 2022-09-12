@@ -1,0 +1,99 @@
+@import "../../common/constants";
+
+.Desktop {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: $color-dark;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: $taskbar-height;
+
+    .Wallpaper {
+      background-position: center;
+      background-size: cover;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: .8;
+    }
+
+  
+    .app-container {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 32rem;
+      justify-content: center;
+      flex-shrink: 1;
+      overflow-y: auto;
+      padding: 1rem;
+  
+      .shortcut {
+        @include hoverable;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        width: 8rem;
+        height: 8rem;
+        flex-direction: column;
+        justify-content: center;
+        padding: 1rem;
+        border-radius: .2rem;
+  
+        &.link-external {
+          .name {
+            position: relative;
+  
+            &:after {
+              position: absolute;
+              content: '';
+              display: inline-block;
+              margin-left: .3rem;
+              width: .8em;
+              height: 100%;
+              background-size: contain;
+              opacity: .5;
+            }
+          }
+        }
+  
+        .icon {
+          @include icon(4rem);
+          margin-bottom: .2rem;
+        }
+  
+        .name {
+          font-size: $font-size-small;
+          color: white;
+          text-shadow: 0 0 .4rem black;
+          text-align: center;
+          height: 1em;
+        }
+  
+        &:hover {
+          box-shadow: inset 0 0 2px rgba(black, .2);
+        }
+  
+        &:active {
+          box-shadow: inset 0 0 2px rgba(black, .4);
+        }
+      }
+  
+    }
+  
+    .window-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      pointer-events: none;
+    }
+  }
