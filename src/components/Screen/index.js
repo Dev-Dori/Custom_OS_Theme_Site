@@ -2,13 +2,13 @@
 import { Desktop } from 'components';
 import { Taskbar } from 'components';
 import { FileSystemContext } from 'contexts'
-import { Dir } from 'beans';
+import { RootDir } from 'beans';
 import './style.scss'
 
 function Screen(){
     return (
         <div className='Screen'>
-            <FileSystemContext.Provider>
+            <FileSystemContext.Provider value={[RootDir.instance]}>
                 <Desktop />
                 <Taskbar />
             </FileSystemContext.Provider>

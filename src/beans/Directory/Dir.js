@@ -1,6 +1,11 @@
 class Dir {
-    constructor(child){
-        this.child = child;
+    constructor(children) {
+        this.children = Object.keys(children).map(key => {
+            const child = children[key];
+            child.key = key;
+            child.parent = this;
+            return child;
+        });
     }
 }
 

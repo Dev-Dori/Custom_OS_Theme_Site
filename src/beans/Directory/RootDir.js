@@ -3,8 +3,11 @@ import { Dir } from 'beans';
 import { App, SymlinkFile } from 'beans';
 
 class RootDir {
+    constructor(){
+        console.log("RootDir 실행됨");
+    }
     static get instance(){
-        this.RootDir = new Dir({
+        this.rootDir = new Dir({
             users: new Dir({
                 DevDori: new Dir({
                     apps: new Dir({
