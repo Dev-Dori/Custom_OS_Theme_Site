@@ -1,11 +1,15 @@
 import background from 'images/Wallpapers/background.jpg'
 import { FileSystemContext } from 'contexts'
-import './style.scss'
 import { useContext } from 'react';
+import './style.scss'
 
 function Desktop(){
-    const data  = useContext(FileSystemContext);
-    console.log(data);
+    const [FileSystem,ReloadDir]  = useContext(FileSystemContext);
+
+    console.log("Desktop load");
+    console.log(FileSystem)
+    const  a = FileSystem.getChild('users','DevDori','desktop');
+    console.log(a);
     return (
         <div className='Desktop'>
             <div className="Wallpaper" style={{backgroundImage: `url(${background})`}}></div>

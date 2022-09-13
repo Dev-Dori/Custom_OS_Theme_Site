@@ -7,6 +7,15 @@ class Dir {
             return child;
         });
     }
+
+    getChild(...pathKeys) {
+        let dir = this;
+        for (const dirKey of pathKeys) {
+            if (!(dir instanceof Dir)) return undefined;
+            dir = dir.children.find(c => c.key === dirKey);
+        }
+        return dir;
+    };
 }
 
 export default Dir;

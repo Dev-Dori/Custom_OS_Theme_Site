@@ -1,11 +1,11 @@
-import { LinkFile } from 'beans';
 import { Dir } from 'beans';
-import { App, SymlinkFile } from 'beans';
+import { App, SymlinkFile, LinkFile } from 'beans';
 
-class RootDir {
+class RootDir{
     constructor(){
         console.log("RootDir 실행됨");
     }
+    
     static get instance(){
         this.rootDir = new Dir({
             users: new Dir({
