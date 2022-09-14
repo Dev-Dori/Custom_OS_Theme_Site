@@ -7,9 +7,8 @@ function Desktop(){
     const [FileSystem,ReloadDir]  = useContext(FileSystemContext);
 
     console.log("Desktop load");
-    console.log(FileSystem)
-    const  a = FileSystem.getChild('users','DevDori','desktop');
-    console.log(a);
+    console.log(FileSystem.GetUserDir(), FileSystem.GetDesktopDir(), FileSystem.GetAppsDir(), FileSystem.GetApps(), FileSystem.GetDesktop());
+
     return (
         <div className='Desktop'>
             <div className="Wallpaper" style={{backgroundImage: `url(${background})`}}></div>

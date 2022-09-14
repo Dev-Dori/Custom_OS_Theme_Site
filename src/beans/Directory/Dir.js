@@ -1,5 +1,8 @@
-class Dir {
+import { RootDir } from 'beans';
+
+class Dir extends RootDir{
     constructor(children) {
+        super(null);
         this.children = Object.keys(children).map(key => {
             const child = children[key];
             child.key = key;
