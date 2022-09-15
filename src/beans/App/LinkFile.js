@@ -1,6 +1,7 @@
 class LinkFile {
-    constructor(href){
+    constructor(href, Icon){
         this.href = href;
+        this.Icon = Icon;
     }
 }
 

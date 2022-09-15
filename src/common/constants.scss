@@ -1,6 +1,6 @@
 $font-size-large: 1.2rem;
 $font-size-normal: 1rem;
-$font-size-small: .8rem;
+$font-size-small: .9rem;
 $taskbar-height: 3rem;
 $anim-duration: .2s;
 $toolbar-height: 2.8rem;
@@ -11,7 +11,7 @@ $theme-color: $color-dark;
 @mixin icon($size) {
   height: $size;
   width: $size;
-  filter: drop-shadow(0 0 $size / 32 rgba(black, .5));
+  filter: drop-shadow(0 0 calc($size / 32) rgba(black, .5));
 }
 
 @mixin hoverable() {

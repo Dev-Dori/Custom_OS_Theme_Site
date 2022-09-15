@@ -1,6 +1,7 @@
 class SymlinkFile {
-    constructor(AppName, command){
+    constructor(AppName, Icon, command){
         this.AppName = AppName;
+        this.Icon = Icon;
         this.command = command;
     }
 }

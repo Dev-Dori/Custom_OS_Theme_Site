@@ -29,7 +29,7 @@
       position: relative;
       display: flex;
       flex-wrap: wrap;
-      max-width: 32rem;
+      max-width: 31rem;
       justify-content: center;
       flex-shrink: 1;
       overflow-y: auto;
@@ -40,13 +40,15 @@
         display: flex;
         align-items: center;
         box-sizing: border-box;
-        width: 8rem;
-        height: 8rem;
+        width: 9rem;
+        height: 9rem;
         flex-direction: column;
         justify-content: center;
         padding: 1rem;
         border-radius: .2rem;
-  
+        color : white;
+        
+
         &.link-external {
           .name {
             position: relative;
@@ -64,14 +66,23 @@
           }
         }
   
+        .Terminal,.Blog,.Github{
+          width: 5.6rem !important;
+          height: 5.6rem !important;
+        }
+
         .icon {
-          @include icon(4rem);
+
+          @include icon(6rem);
           margin-bottom: .2rem;
+          background-position: center;
+          background-size: cover;
+
         }
   
         .name {
           font-size: $font-size-small;
-          color: white;
+          color: #fff;
           text-shadow: 0 0 .4rem black;
           text-align: center;
           height: 1em;

@@ -4,7 +4,6 @@ import './style.scss'
 
 function Taskbar(){
     const [FileSystem,ReloadDir] = useContext(FileSystemContext);
-
     return (
         <div className="Taskbar">
             TaskBar
