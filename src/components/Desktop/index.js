@@ -8,25 +8,8 @@ function Desktop(){
     const [FileSystem,ReloadDir]  = useContext(FileSystemContext);
 
     const DesktopDir = FileSystem.GetDesktopDir();
-    const Apps = FileSystem.GetApps();
     console.log("Desktop load");
     console.log(FileSystem);
-
-
-    // function App(){
-        
-    // }
-    // const a = DesktopDir.children.map((child)=>{
-    //     if(child.constructor.name === "SymlinkFile"){
-    //         // console.log(child.AppName,child.command, a.find((element) => {return element.key === child.AppName}));
-    //         // let p = (new (a.find((element) => (element.key === child.AppName)))).Icon
-    //         console.log(Apps.find((element) => (element.key === child.AppName)).Icon);
-    //     }else{
-    //         return '11';
-    //     }
-    // })
-
-    // console.log(a);
 
 
     return (
