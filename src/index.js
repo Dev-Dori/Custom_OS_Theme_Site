@@ -5,12 +5,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('Container'));
 root.render(
-//<React.StrictMode>
   <Router>
     <Routes>
       <Route path="/*" element={<Screen />} />
     </Routes>
   </Router>
-// </React.StrictMode>
 );
 
