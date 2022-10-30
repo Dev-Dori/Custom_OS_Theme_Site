@@ -1,18 +1,26 @@
-import background from 'images/Wallpapers/background.jpg'
 import { FileSystemContext } from 'contexts'
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './style.scss'
+import background from 'images/Wallpapers/background.jpg'
 import { Link } from 'react-router-dom';
 
 function Desktop(){
     const [FileSystem,ReloadDir]  = useContext(FileSystemContext);
     const DesktopDir = FileSystem.GetDesktopDir();
     const apps = FileSystem.GetApps();
-    console.log("Desktop load");
-    console.log(apps)
-    console.log(FileSystem);
-    console.log(DesktopDir);
-    DesktopDir.children.map(child=>(console.log(child.href)))
+    const history = useNavigate();
+    const location = useLocation();
+    const currentUrl = location.pathname;
+
+    useEffect(() => {
+        apps && apps.forEach(app => {
+            const focused = currentUrl.replace("/","") === app.key;
+            if (focused && !app.opened) app.opened = true;
+        });
+        ReloadDir();
+    }, [currentUrl]);
+
     return (
         <div className='Desktop'>
             <div className="Wallpaper" style={{backgroundImage: `url(${background})`}}></div>
@@ -32,6 +40,11 @@ function Desktop(){
                         </a>)
                     }}
                 )}
+            </div>
+            <div className='window-container'>
+                {apps && apps.filter(app=>app.opened).map(app=>(
+                    <app.WindowComponent key={app.key}/>
+                ))}
             </div>
         </div>
     );

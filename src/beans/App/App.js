@@ -1,8 +1,8 @@
 function App(WindowComponent){ 
-    const app = new WindowComponent();
-    this.Icon = app.Icon;
+    this.WindowComponent = WindowComponent;
     this.zindex = 1;
     this.opened = false;
+    // this.WindowComponent = WindowComponent;
 }
 
 export default App;

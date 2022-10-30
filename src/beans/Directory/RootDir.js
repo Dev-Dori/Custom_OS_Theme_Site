@@ -31,7 +31,6 @@ class RootDir{
         if (this.rootDir){
             return this.rootDir;
         }
-
         const termianl = new App(Terminal);
         const fileExplorer = new App(FileExplorer);
         const system = new App(System);
@@ -51,10 +50,10 @@ class RootDir{
                     Desktop: new Dir({
                         // System: new SymlinkFile('System',system.Icon), // Desktop Icon
                         System: new LinkFile('https://devdori.notion.site/Profile-b65bbb4fbb41417ab3c616dd84c43a28',system.Icon), // Desktop Icon
-                        Files: new SymlinkFile('FileExplorer', fileExplorer.Icon), //  File explorer Icon
-                        Projects: new SymlinkFile('Projects', project.Icon), // Documents Icon
-                        Terminal: new SymlinkFile('Terminal', termianl.Icon), // Terminal Icon
-                        Blog: new SymlinkFile('Browser', browser.Icon, 'url=blog'), // Browser Icon or Edge Icon
+                        Files: fileExplorer,
+                        Projects: project, 
+                        Terminal: termianl,
+                        Blog: browser, 
                         Github: new LinkFile('https://github.com/Dev-Dori',github.Icon), // Github Icon
                     })
                 })
