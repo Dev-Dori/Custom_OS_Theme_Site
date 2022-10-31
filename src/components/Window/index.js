@@ -5,8 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import './style.scss';
 
 function Window({Name, Contents, Update, app}){
-    const {key, focused, zIndex } = app;
-    const [[left, top, width, height], setCoords] = useState([100, 100, 280, 150]);
+    const {key, focused, zIndex, defaultLeft, defaultTop } = app;
+    const [[left, top, width, height], setCoords] = useState([defaultLeft, defaultTop, 280, 150]);
     const [maximized, setMaximized] = useState(false);
     const [minimized, setMinimized] = useState(false);
     const [resizing, setResizing] = useState(false);

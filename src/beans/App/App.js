@@ -4,6 +4,8 @@ function App(WindowComponent){
     this.opened = false;
     this.focused = false;
     this.closing = false;
+    this.defaultLeft = Math.floor(100+Math.random() * 800);
+    this.defaultTop = Math.floor(80+Math.random() * 500);
     // this.WindowComponent = WindowComponent;
 }
 
