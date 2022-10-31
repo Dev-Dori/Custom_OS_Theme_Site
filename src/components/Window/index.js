@@ -4,7 +4,7 @@ import { classes } from 'common/utils';
 import { Link } from 'react-router-dom';
 import './style.scss';
 
-function Window({ClassName, Contents}){
+function Window({ClassName, Contents, Update}){
 
     const [[left, top, width, height], setCoords] = useState([100, 100, 280, 150]);
     const [resizing, setResizing] = useState(false);
@@ -40,7 +40,7 @@ function Window({ClassName, Contents}){
                 <div className="button-container">
                     <Link className="button button-minimize" to="/">⚊</Link>
                     <Link className="button button-maximize">☐</Link>
-                    <Link className="button button-close" to="/">✕</Link>
+                    <Link className="button button-close" to="/" onClick={() => Update({ closing: true })}>✕</Link>
                 </div>
                 <div className='title-container'></div>
             </div>

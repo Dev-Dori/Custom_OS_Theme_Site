@@ -13,14 +13,29 @@ function Desktop(){
     const history = useNavigate();
     const location = useLocation();
     const currentUrl = location.pathname;
-
+    console.log('Desktop load')
+    
     useEffect(() => {
         apps && apps.forEach(app => {
             const focused = currentUrl.replace("/","") === app.key;
-            if (focused && !app.opened) app.opened = true;
+            if (focused && !app.opened){
+                app.opened = true;
+            }
         });
         ReloadDir();
     }, [currentUrl]);
+
+    useEffect(() => {
+        apps && apps.forEach(app => {
+            if (app.closing) {
+            setTimeout(() => {
+                app.closing = false;
+                app.opened = false;
+                ReloadDir();
+            }, 100);
+            }
+        });
+    });
 
     return (
         <div className='Desktop'>
@@ -46,7 +61,12 @@ function Desktop(){
             </div>
             <div className='window-container'>
                 {apps && apps.filter(app=>app.opened).map(app=>(
-                    <app.WindowComponent key={app.key}/>
+                    <app.WindowComponent key={app.key}
+                        Update={patch =>{
+                            Object.assign(app, patch);
+                            ReloadDir()
+                        ;}}
+                    />
                 ))}
             </div>
         </div>

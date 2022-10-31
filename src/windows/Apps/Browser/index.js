@@ -1,5 +1,5 @@
-function Browser(){
-    // this.Icon = Icon;
+function Browser(props){
+    const { Update } = props;
     return(<div>Browser</div>);
     
 }
