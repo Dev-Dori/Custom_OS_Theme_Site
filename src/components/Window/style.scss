@@ -139,9 +139,9 @@
     .title-container {
       align-self: stretch;
       display: flex;
-      justify-content: center;
+      justify-content: left;
       align-items: center;
-      padding: .8rem 5rem;
+      padding: 0.3rem 1rem;
 
       .icon {
         @include icon(1.2rem);

@@ -49,14 +49,16 @@ function Window({Name, Contents, Update, app}){
                     }
                     window.addEventListener('mousemove', onMouseMove);
                     window.addEventListener('mouseup', onMouseUp);
-                }}
-            >
+                }}>
+                
+                <div className='title-container'>
+                    <div className="name">{app.key}</div>
+                </div>
                 <div className="button-container">
                     <Link className="button button-minimize" to="/" onClick={e=>{setMinimized(true)}}>⚊</Link>
                     <div className="button button-maximize" onClick={e=>{setMaximized(!maximized)}}>☐</div>
                     <Link className="button button-close" to="/" onClick={() => Update({ closing: true })}>✕</Link>
                 </div>
-                <div className='title-container'></div>
             </div>
 
             {/* ############    Contents     ############ */}
