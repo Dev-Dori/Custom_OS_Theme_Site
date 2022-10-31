@@ -1,6 +1,7 @@
 import { FileSystemContext } from 'contexts'
 import { useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Icon } from 'components';
 import './style.scss'
 import background from 'images/Wallpapers/background.jpg'
 import { Link } from 'react-router-dom';
@@ -29,13 +30,15 @@ function Desktop(){
                     if(!child.href){
                         return(
                         <Link to={child.key} className='shortcut' id={'cortcut-'+child.key} key={child.key}>
-                            <div className={'Icon icon '+child.key} style={{backgroundImage: `url(${child.Icon})`}}></div>
+                            {/* <div className={'Icon icon '+child.key} style={{backgroundImage: `url(${child.Icon})`}}></div> */}
+                            <Icon iconKey={child.key} />
                             <div className='name'>{child.key}</div>
                         </Link>)
                     }else{
                         return(
                         <a href={child.href} className='shortcut' id={'cortcut-'+child.key} key={child.key}>
-                            <div className={'Icon icon '+child.key} style={{backgroundImage: `url(${child.Icon})`}}></div>
+                            {/* <div className={'Icon icon '+child.key} style={{backgroundImage: `url(${child.Icon})`}}></div> */}
+                            <Icon iconKey={child.key} />
                             <div className='name'>{child.key}</div>
                         </a>)
                     }}
