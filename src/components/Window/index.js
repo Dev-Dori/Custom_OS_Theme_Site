@@ -1,18 +1,27 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { classes } from 'common/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import './style.scss';
 
 function Window({Name, Contents, Update, app}){
-    const {key, closing, focused, zIndex } = app;
+    const {key, focused, zIndex } = app;
     const [[left, top, width, height], setCoords] = useState([100, 100, 280, 150]);
+    const [maximized, setMaximized] = useState(false);
+    const [minimized, setMinimized] = useState(false);
     const [resizing, setResizing] = useState(false);
     const [moving, setMoving] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (focused && minimized) {
+            setMinimized(false);
+        }
+    }, [focused]);
+
     return (
-        <div className={classes('Window',key,resizing && 'resizing', moving && 'moving')} style={{ left, top, width, height, zIndex}}
+        <div className={classes('Window',key,resizing && 'resizing', moving && 'moving',  minimized && 'minimized', maximized && 'maximized')}
+            style={{ left, top, width, height, zIndex}}
             onMouseDown={e=>{
                 if(!focused) navigate(key);
             }}
@@ -43,8 +52,8 @@ function Window({Name, Contents, Update, app}){
                 }}
             >
                 <div className="button-container">
-                    <Link className="button button-minimize" to="/">⚊</Link>
-                    <div className="button button-maximize">☐</div>
+                    <Link className="button button-minimize" to="/" onClick={e=>{setMinimized(true)}}>⚊</Link>
+                    <div className="button button-maximize" onClick={e=>{setMaximized(!maximized)}}>☐</div>
                     <Link className="button button-close" to="/" onClick={() => Update({ closing: true })}>✕</Link>
                 </div>
                 <div className='title-container'></div>
