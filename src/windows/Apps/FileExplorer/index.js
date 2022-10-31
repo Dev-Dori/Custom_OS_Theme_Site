@@ -1,7 +1,13 @@
+import { Window } from 'components';
+
 function FileExplorer(){
     // console.log('execute FileExplorer');
     // this.Icon  = Icon;
-    return(<div>FileExplorer</div>);
+    return(
+        <Window 
+        ClassName='Window Terminal'
+        Contents={(<div>FileExplorer</div>)}
+    />);
 
 }
 

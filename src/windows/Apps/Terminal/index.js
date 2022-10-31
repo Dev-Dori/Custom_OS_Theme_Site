@@ -1,5 +1,13 @@
+import { Window } from 'components';
+import './style.scss';
+
 function Terminal(){
-    return(<div>Termianl</div>);
+    return(
+        <Window 
+            ClassName='Window Terminal'
+            Contents={(<div>This is Terminal</div>)}
+        />
+    );
 }
 
 export default Terminal;

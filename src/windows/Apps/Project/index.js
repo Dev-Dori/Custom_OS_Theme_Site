@@ -1,8 +1,11 @@
+import { Window } from 'components';
 
 function Project(){
-    // this.Icon = Icon;
-    return(<div>Project</div>);
-
+    return(
+        <Window 
+        ClassName='Window Terminal'
+        Contents={(<div>Project</div>)}
+    />);
 }
 
 export default Project;

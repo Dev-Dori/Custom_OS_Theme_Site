@@ -1,5 +1,12 @@
 @import "../../common/constants";
 
+body {
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none
+}
+
 .Desktop {
     position: absolute;
     top: 0;

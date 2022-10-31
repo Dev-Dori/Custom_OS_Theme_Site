@@ -1,0 +1,1 @@
+export const classes = (...classes) => classes.filter(v => v).join(' ');
