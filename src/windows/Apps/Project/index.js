@@ -1,11 +1,12 @@
 import { Window } from 'components';
 
 function Project(props){
-    const { Update } = props;
+    const { Update, app } = props;
     return(
         <Window 
         Update = {Update}
-        ClassName='Window Terminal'
+        zIndex = {app.zIndex}
+        app={app}
         Contents={(<div>Project</div>)}
     />);
 }

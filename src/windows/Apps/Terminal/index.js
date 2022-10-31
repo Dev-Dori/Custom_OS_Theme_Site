@@ -2,11 +2,12 @@ import { Window } from 'components';
 import './style.scss';
 
 function Terminal(props){
-    const { Update } = props;
+    const { Update, app } = props;
     return(
         <Window 
             Update = {Update}
-            ClassName='Window Terminal'
+            zIndex = {app.zIndex}
+            app={app}
             Contents={(<div>This is Terminal</div>)}
         />
     );
