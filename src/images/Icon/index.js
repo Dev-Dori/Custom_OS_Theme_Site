@@ -6,4 +6,4 @@ export { default as Github } from './Desktop/Github.png';
 export { default as Terminal } from './Desktop/Terminal.png';
 export { default as Blog } from './Desktop/Browser.png';
 
-export { default as Window } from './Taskbar/windows.webp'
+export { default as windows } from './Taskbar/windows.webp'

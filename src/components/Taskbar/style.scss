@@ -70,12 +70,22 @@
             &:after {
                 content: '';
                 position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                border-bottom: solid 3px white;
+                bottom: 3.5px;
+                left: 50%;
+                border: solid 1.3px white;
+                background-color: white;
                 opacity: 0;
+                transform: translate(-50%, 0%);
                 transition: opacity $anim-duration;
+                border-radius: 10px;
+                width: 15%;
+                transition: .6s;
+            }
+
+            &:hover{
+                &:after{
+                    width: 30%;
+                }
             }
 
             &.active {

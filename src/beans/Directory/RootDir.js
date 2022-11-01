@@ -31,7 +31,7 @@ class RootDir{
         if (this.rootDir){
             return this.rootDir;
         }
-        const termianl = new App(Terminal);
+        const termianl = new App(Terminal,true);
         const fileExplorer = new App(FileExplorer);
         const system = new App(System);
         const github = new App(Github);

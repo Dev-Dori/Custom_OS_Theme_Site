@@ -54,7 +54,7 @@ function Desktop(){
                         </Link>)
                     }else{
                         return(
-                        <a href={child.href} className='shortcut' id={'cortcut-'+child.key} key={child.key}>
+                        <a href={child.href} className='shortcut' id={'cortcut-'+child.key} key={child.key} target='blank'>
                             {/* <div className={'Icon icon '+child.key} style={{backgroundImage: `url(${child.Icon})`}}></div> */}
                             <Icon iconKey={child.key} />
                             <div className='name'>{child.key}</div>
