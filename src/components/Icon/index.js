@@ -1,13 +1,10 @@
-import React from 'react'
+import React from 'react';
 import * as IconMap from 'images/Icon';
+import { classes } from 'common/utils';
 
 function Icon({ iconKey, iconUrl}) {
-    const classes = (...classes) => classes.filter(v => v).join(' ');
-    return (
-        <div className={classes('Icon icon',iconKey)} style={{ backgroundImage: `url(${iconUrl || IconMap[iconKey]})` }}>
-        </div>
-    )
+    return ( <div className={classes('Icon icon',iconKey)} style={{ backgroundImage: `url(${iconUrl || IconMap[iconKey]})` }}></div> )
 }
 
 
-export default Icon;
+export default React.memo(Icon);

@@ -99,10 +99,19 @@
   .toolbar {
     background-color: $color-light;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     border-bottom: solid 1px #CCC;
     overflow: hidden;
-
+    height: 29px;
+    .image-container{
+      display: flex;
+      padding: 0.3rem;
+      .Icon{
+        width: 20px;
+        height: 20px;
+        background-size: cover;
+      }
+    }
     .button-container {
       position: absolute;
       padding: 0.2rem .8rem;
@@ -141,7 +150,7 @@
       display: flex;
       justify-content: left;
       align-items: center;
-      padding: 0.3rem 1rem;
+      padding: 0.3rem 0.2rem;
 
       .icon {
         @include icon(1.2rem);

@@ -13,7 +13,7 @@ function Desktop(){
     const history = useNavigate();
     const location = useLocation();
     const currentUrl = location.pathname;
-    
+    console.log('Desktop')
     useEffect(() => {
         apps && apps.forEach(app => {
             const focused = currentUrl.replace("/","") === app.key;

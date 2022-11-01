@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { classes } from 'common/utils';
 import { Link, useNavigate } from 'react-router-dom';
+import { Icon } from 'components';
 import './style.scss';
 
 function Window({Name, Contents, Update, app}){
@@ -18,14 +19,15 @@ function Window({Name, Contents, Update, app}){
             setMinimized(false);
         }
     }, [focused]);
-
+    
     return (
-        <div className={classes('Window',key,resizing && 'resizing', moving && 'moving',  minimized && 'minimized', maximized && 'maximized')}
+        <div className={classes('Window',key,resizing && 'resizing',focused && 'focused', moving && 'moving',  minimized && 'minimized', maximized && 'maximized')}
             style={{ left, top, width, height, zIndex}}
             onMouseDown={e=>{
                 if(!focused) navigate(key);
             }}
         >
+            {/* ############    상단바     ############ */}
             <div className='toolbar' 
                 onMouseDown={e=>{
                     const offsetX = e.clientX;
@@ -50,7 +52,7 @@ function Window({Name, Contents, Update, app}){
                     window.addEventListener('mousemove', onMouseMove);
                     window.addEventListener('mouseup', onMouseUp);
                 }}>
-                
+                <div className='image-container'><Icon iconKey={app.key}/></div>
                 <div className='title-container'>
                     <div className="name">{app.key}</div>
                 </div>

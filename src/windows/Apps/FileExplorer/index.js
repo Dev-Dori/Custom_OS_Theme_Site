@@ -6,7 +6,7 @@ function FileExplorer(props){
         <Window 
         Update = {Update}
         app = {app}
-        ClassName='Window Terminal'
+        ClassName='Window FileExplorer'
         Contents={(<div>FileExplorer</div>)}
     />);
 
