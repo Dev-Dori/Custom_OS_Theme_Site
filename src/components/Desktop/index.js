@@ -13,20 +13,6 @@ function Desktop(){
     const history = useNavigate();
     const location = useLocation();
     const currentUrl = location.pathname;
-    console.log('Desktop')
-    useEffect(() => {
-        apps && apps.forEach(app => {
-            const focused = currentUrl.replace("/","") === app.key;
-            if (focused && !app.opened){
-                app.opened = true;
-            }
-            if (focused && !app.focused) {
-                app.zIndex = Math.max(...apps.map(app => app.zIndex)) + 1;
-            }
-            app.focused = focused;
-        });
-        ReloadDir();
-    }, [currentUrl]);
 
     useEffect(() => {
         apps && apps.forEach(app => {
@@ -39,6 +25,24 @@ function Desktop(){
             }
         });
     });
+
+    useEffect(() => {
+        let change = false;
+        apps && apps.forEach(app => {
+            const focused = currentUrl.replace("/","") === app.key;
+            if (focused && !app.opened){
+                app.opened = true;
+                change = true;
+            }
+            if (focused && !app.focused) {
+                app.zIndex = Math.max(...apps.map(app => app.zIndex)) + 1;
+                change = true;
+            }
+            app.focused = focused;
+        });
+        if(change) ReloadDir();
+    }, [currentUrl]);
+
 
     return (
         <div className='Desktop'>

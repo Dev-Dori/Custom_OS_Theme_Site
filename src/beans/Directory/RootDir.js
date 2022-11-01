@@ -31,6 +31,7 @@ class RootDir{
         if (this.rootDir){
             return this.rootDir;
         }
+        // new App(component, TaskbarPin)
         const termianl = new App(Terminal,true);
         const fileExplorer = new App(FileExplorer);
         const system = new App(System);

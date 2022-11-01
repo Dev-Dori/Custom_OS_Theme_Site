@@ -13,7 +13,7 @@ function Window({Name, Contents, Update, app}){
     const [resizing, setResizing] = useState(false);
     const [moving, setMoving] = useState(false);
     const navigate = useNavigate();
-
+    console.error('wwwww');
     useEffect(() => {
         if (focused && minimized) {
             setMinimized(false);
