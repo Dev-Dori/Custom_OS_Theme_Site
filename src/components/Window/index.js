@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { classes } from 'common/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from 'components';
+// import $ from "jquery";
 import './style.scss';
 
 function Window({Name, Contents, Update, app}){
@@ -80,7 +81,6 @@ function Window({Name, Contents, Update, app}){
                 ].map(sides=>(
                         <div key={sides.join('-')} className={classes('border', ...sides.map(side=>`border-${side}`))}
                             onMouseDown={e=>{
-                                setResizing(true);
                                 const offsetX = e.clientX;
                                 const offsetY = e.clientY;
                                 
