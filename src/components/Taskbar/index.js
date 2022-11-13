@@ -7,9 +7,9 @@ import './style.scss'
 
 const getClock = () => {
     const two = (x) => x < 10 ? `0${x}` : x;
-    const date = new Date();
-    const H = date.getHours();
-    const m = date.getMinutes();
+    const today = new Date();
+    const H = today.getHours();
+    const m = today.getMinutes();
     const hh = two(H % 12 || 12);
     const mm = two(m);
     const A = ['AM', 'PM'][H / 12 | 0];
@@ -20,18 +20,16 @@ const getClock = () => {
 function Taskbar(){
     const [FileSystem,ReloadDir] = useContext(FileSystemContext);
     const apps = FileSystem.GetApps();
-    const [clock, setClock] = useState(getClock());
+    const [time, setTime] = useState(new Date());
 
     useEffect(() => {
-        const interval = window.setInterval(() => {
-            const clock = getClock();
-            setClock(clock);
-        }, 1000);
-
-        return () => {
-            window.clearInterval(interval);
-        };
+      const interval = setInterval(() => {
+        setTime(new Date());
+      }, 1000);
+      return () => clearInterval(interval);
     }, []);
+
+
     return (
         <div className="Taskbar">
             <div></div>
@@ -45,8 +43,20 @@ function Taskbar(){
                     </Link>)
                 )}
             </div>
-            <div className="label label-clock">
-                <div className="name">{clock}</div>
+            <div className="label Date">
+                <div>
+                    {time.toLocaleTimeString("en-US", {
+                        hour: "numeric",
+                        minute: "numeric",
+                    })}
+                </div>
+                <div>
+                    {time.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "numeric",
+                    })}
+                </div>
             </div>
         </div>
     )
