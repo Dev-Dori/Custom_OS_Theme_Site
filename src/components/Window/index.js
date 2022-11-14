@@ -8,7 +8,7 @@ import './style.scss';
 
 function Window({Name, Contents, Update, app}){
     const {key, focused, zIndex, defaultLeft, defaultTop } = app;
-    const [[left, top, width, height], setCoords] = useState([defaultLeft, defaultTop, 280, 150]);
+    const [[left, top, width, height], setCoords] = useState([defaultLeft, defaultTop, 674, 426]);
     const [maximized, setMaximized] = useState(false);
     const [minimized, setMinimized] = useState(false);
     const [resizing, setResizing] = useState(false);

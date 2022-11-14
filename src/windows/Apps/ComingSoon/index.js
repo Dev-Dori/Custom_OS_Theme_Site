@@ -1,7 +1,6 @@
 import { Window } from 'components';
 import './style.scss'
 
-
 function ComingSoon(props){
     const { Update, app } = props;
     return(
@@ -10,16 +9,10 @@ function ComingSoon(props){
         app = {app}
         ClassName={app.key}
         Contents={(
-            <div class="bgimg">
-                <div class="topleft">
-                    <p>Logo</p>
-                </div>
-                <div class="middle">
+            <div className="bgimg">
+                <div className="middle">
                     <h1>COMING SOON</h1>
-                    <p>35 days left</p>
-                </div>
-                <div class="bottomleft">
-                    <p>Some text</p>
+                    <p>40 days left</p>
                 </div>
             </div>
         )}

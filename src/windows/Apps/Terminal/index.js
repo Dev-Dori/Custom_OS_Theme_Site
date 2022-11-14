@@ -1,7 +1,10 @@
 import { Window } from 'components';
+import { ComingSoon } from 'windows';
 
 function Terminal(props){
     const { Update, app } = props;
+    return(<ComingSoon Update={Update} app={app}/>)
+
     return(
         <Window 
         Update = {Update}
