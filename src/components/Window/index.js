@@ -119,6 +119,7 @@ function Window({Name, Contents, Update, app}){
                                     window.removeEventListener('mousemove', onMouseMove);
                                     window.removeEventListener('mouseup', onMouseUp);
                                 }
+                                setResizing(true)
                                 window.addEventListener('mousemove', onMouseMove);
                                 window.addEventListener('mouseup', onMouseUp);
                             }}

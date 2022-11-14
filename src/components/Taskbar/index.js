@@ -22,6 +22,7 @@ function Taskbar(){
     const apps = FileSystem.GetApps();
     const [time, setTime] = useState(new Date());
 
+
     useEffect(() => {
       const interval = setInterval(() => {
         setTime(new Date());
