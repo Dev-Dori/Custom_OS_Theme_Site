@@ -12,7 +12,8 @@ function ComingSoon(props){
             <div className="bgimg">
                 <div className="middle">
                     <h1>COMING SOON</h1>
-                    <p>40 days left</p>
+                    {/* <p>40 days left</p> */}
+                    <p>May be</p>
                 </div>
             </div>
         )}

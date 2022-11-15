@@ -1,5 +1,5 @@
 import { Dir } from 'beans';
-import { App, SymlinkFile, LinkFile } from 'beans';
+import { App, LinkFile } from 'beans'; //SymlinkFile
 import { Terminal, FileExplorer, System, Github, Browser, Project } from 'windows';
 
 class RootDir{    
@@ -43,15 +43,15 @@ class RootDir{
             users: new Dir({
                 DevDori: new Dir({
                     apps: new Dir({
-                        // System : system,
+                        System : system,
                         Brower: browser,
                         Terminal : termianl, // new App('Terminal')
                         FileExplorer : fileExplorer,
                         Projects : project,
                     }),
                     Desktop: new Dir({
-                        // System: new SymlinkFile('System',system.Icon), // Desktop Icon
-                        System: new LinkFile('https://devdori.notion.site/Profile-b65bbb4fbb41417ab3c616dd84c43a28',system.Icon), // Desktop Icon
+                        System: system,
+                        // System: new LinkFile('https://devdori.notion.site/Profile-b65bbb4fbb41417ab3c616dd84c43a28',system.Icon), // Desktop Icon
                         Files: fileExplorer,
                         // Projects: project, 
                         Terminal: termianl,
