@@ -66,6 +66,7 @@ function Window({Name, Contents, Update, app}){
             {/* ############    Contents     ############ */}
             <div className='contents'>
                 {Contents}
+                <div className='interceptor'></div>
             </div>
             {/* ############ Resizing Window ############ */}
             {

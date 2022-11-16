@@ -43,7 +43,7 @@
   box-shadow: 0 0 48px rgba(black, .4);
 
   .toolbar {
-    .content {
+    .contents {
       .interceptor {
         display: none;
       }
@@ -54,7 +54,7 @@
   &.resizing {
     transition: none;
 
-    .content {
+    .contents {
       .interceptor {
         display: block;
       }
@@ -284,6 +284,7 @@
       bottom: 0;
       left: 0;
       right: 0;
+      display: none;
     }
   }
 
