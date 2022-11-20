@@ -29,10 +29,12 @@
 
             height: 110%;
             border-radius: 0 132% 153% 0;
-            border-right: 8px solid transparent;
+            border: 8px solid transparent;
+            border-left: 0px;
             background-image: linear-gradient(#fff, #fff), linear-gradient(to top, rgb(69 104 220), rgb(177 106 179));
             background-origin: border-box;
             background-clip: content-box, border-box;
+            margin-top: -10px;
         }
     }
     .Intro{
@@ -70,11 +72,49 @@
 
     .social{
         display: flex;
-        justify-content: space-between;
         font-size: 2rem;
+
+        svg{
+            color: #fff;
+            border-radius: 2.6rem;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 1.3rem;
+            height: 1.7rem;
+            width: 1.7rem;
+            line-height: 2.6rem;
+            position: relative;
+            text-align: center;
+            -webkit-user-select: none;
+            user-select: none;
+            margin: 0 5px 10px;
+            transition: .2s ease-in;
+            padding: .3rem;
+
+            path{
+                width: 90%;
+            }
+        }
+
         a{
             text-decoration: none;
             color: black;
+            margin: 0 6px 0 0;
+            .Facebook{
+                background-color: #3b5998;
+            }
+
+            .Github{
+                background-color: #333;
+            }
+
+            .Discord{
+                background-color: rgb(86, 98, 246);
+            }
+
+            .Instagram{
+                background: radial-gradient(circle farthest-corner at 32% 106%,#ffe17d 0%,#ffcd69 10%,#fa9137 28%,#eb4141 42%,transparent 82%) , linear-gradient(135deg,#234bd7 12%,#c33cbe 58%);
+            }
         }
     }
 }
