@@ -111,7 +111,7 @@ function Window({Name, Contents, Update, app}){
                                             default:
                                         }
                                     })
-                                    if (newWidth < 280 || newHeight < 60) return;
+                                    if (newWidth < 600 || newHeight < 60) return;
                                     setCoords([newLeft,newTop,newWidth,newHeight]);
                                 }
 

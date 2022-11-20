@@ -1,9 +1,91 @@
 
+@import "../../../common/constants";
+
 .Profile {
+    overflow: auto;
+    flex-direction: row;
+    background-color: #f8f8f8;
     height: 100%;
-    iframe{
-        width: 100%;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    // justify-content: center;
+
+    .Logo{
+        margin-right: 4rem;
         height: 100%;
+        overflow: hidden;
+        img{
+            // width: 15rem;
+            // border-radius: 100%;
+            // border: 5px solid transparent;
+            // background-image: linear-gradient(#fff, #fff), 
+            // // linear-gradient(to right, red 0%,  orange 100%);
+            // linear-gradient(to left, #4568dc83, #b16ab391);
+            // background-origin: border-box;
+            // background-clip: content-box, border-box;
+            // transform: rotate(-5deg);
+
+            height: 110%;
+            border-radius: 0 132% 153% 0;
+            border-right: 8px solid transparent;
+            background-image: linear-gradient(#fff, #fff), linear-gradient(to top, rgb(69 104 220), rgb(177 106 179));
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+        }
+    }
+    .Intro{
+        .Greetings{
+            .hand{
+                animation-duration: 2.5s;
+                animation-iteration-count: infinite;
+                animation-name: wave;
+                display: inline-block;
+                transform-origin: 70% 70%;
+            }
+            h1,h2{
+                margin: 0;
+            }
+        }
+    }
+    .InfoBox{
+        ul{
+            span{
+                font-size: 1.5rem;
+                padding-right: 5px;
+            }
+
+            li{
+                padding: 2px 0 2px 0;
+                transition: all .25s ease;
+                &:hover{
+                    transform: translateY(-4px);
+                }
+            }
+            padding: 0;
+            list-style-type: none;
+        }
+    }
+
+    .social{
+        display: flex;
+        justify-content: space-between;
+        font-size: 2rem;
+        a{
+            text-decoration: none;
+            color: black;
+        }
     }
 }
 
+@keyframes wave {
+    0% { transform: rotate( 0.0deg) }
+    10% { transform: rotate(14.0deg) }
+    20% { transform: rotate(-8.0deg) }
+    30% { transform: rotate(14.0deg) }
+    40% { transform: rotate(-4.0deg) }
+    50% { transform: rotate(10.0deg) }
+    60% { transform: rotate( 0.0deg) }
+    100% { transform: rotate( 0.0deg) }
+  }

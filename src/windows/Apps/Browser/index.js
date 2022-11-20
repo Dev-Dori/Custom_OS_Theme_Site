@@ -11,7 +11,8 @@ function Browser(props){
         ClassName='Window Browser'
         Contents={(
             <div className='Browser'>
-                <iframe src="https://www.google.com/?igu=1"></iframe>
+                {/* <iframe src="https://www.google.com/?igu=1"></iframe> */}
+                <iframe src="https://reactportfoliotemplate.paytonpierce.dev/"></iframe>
             </div>
         )}
     />);
