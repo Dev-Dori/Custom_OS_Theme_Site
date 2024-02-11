@@ -22,7 +22,7 @@ function Window({Name, Contents, Update, app,WindowSize}){
         }
     }, [focused]);
     const [[left, top, width, height], setCoords] = useState([getRandom((window.innerWidth-WindowWidth)/6, (window.innerWidth-WindowWidth)/1.5), 
-                                                              getRandom(30,(window.innerHeight-WindowHeight)-40), 
+                                                              getRandom(30,(window.innerHeight-WindowHeight)-70), 
                                                               WindowWidth, 
                                                               WindowHeight]);
 
