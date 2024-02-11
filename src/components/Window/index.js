@@ -32,12 +32,8 @@ function Window({Name, Contents, Update, app,WindowSize}){
     return (
         <div className={classes('Window',key,resizing && 'resizing',focused && 'focused', moving && 'moving',  minimized && 'minimized', maximized && 'maximized')}
             style={{ left, top, width, height, zIndex}}
-            onMouseDown={e=>{
-                if(!focused) navigate(key);
-            }}
-            onWheel={e=>{
-                if(!focused) navigate(key);
-            }}
+            onMouseDown={e=>{if(!focused) navigate(key);}}
+            onWheel={e=>{if(!focused) navigate(key);}}
         >
             {/* ############    상단바     ############ */}
             <div className='toolbar' 
@@ -48,7 +44,11 @@ function Window({Name, Contents, Update, app,WindowSize}){
                     const onMouseMove = e => {
                         const dx = e.clientX - offsetX;
                         const dy = e.clientY - offsetY;
+                        console.log(top + dy)
 
+                        if(top+dy<0) setMaximized([true, false]);
+                        else setMaximized([false, false]);
+                        
                         setCoords([
                           (left+dx >= 0 && left + dx + width <= window.innerWidth ? left + dx:(left+dx<=0?0:window.innerWidth-width)),
                           (top +dy >= 0 && top  + dy + height <= window.innerHeight ? top + dy:(top+dy<=0?0:window.innerHeight-height)),
