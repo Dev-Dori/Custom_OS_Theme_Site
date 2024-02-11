@@ -11,6 +11,7 @@ import logo from './images/logo/11.jpg';
 
 function System(props){
     const { Update, app } = props;
+    let WindowSize = {WindowHeight:450, WindowWidth:700};
     // return(<ComingSoon Update={Update} app={app}/>)
     // https://nickreyno.com/#contact
     return(
@@ -18,9 +19,11 @@ function System(props){
         Update = {Update}
         zIndex = {app.zIndex}
         app={app}
+        WindowSize = {WindowSize}
         Contents={(
             <div className='Profile'>
-                <div className='Logo'>
+                <iframe src="https://blog.devdori.com/profile"></iframe>
+                {/* <div className='Logo'>
                     <img src={logo}></img>
                 </div>
                 <div className='Intro'>
@@ -33,7 +36,7 @@ function System(props){
                             <ul>    
                                 <li><span>🎁</span> Called by DevDori</li>
                                 <li><span>🌎</span> Based in the KR</li>
-                                <li><span>💼</span> Systems Engineer at ShinhanBank</li>
+                                <li><span>💼</span> Information Security Division at ShinhanBank</li>
                                 <li><span>📧</span> trouna43@gmail.com</li>
                             </ul>
                         </div>
@@ -44,7 +47,7 @@ function System(props){
                             <a target='_blank' rel="noreferrer" href='https://discordapp.com/users/281306936744476672'><FontAwesomeIcon icon={faDiscord} className="Discord"></FontAwesomeIcon></a>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         )}
     />);

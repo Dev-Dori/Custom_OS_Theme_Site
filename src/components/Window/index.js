@@ -6,24 +6,36 @@ import { Icon } from 'components';
 // import $ from "jquery";
 import './style.scss';
 
-function Window({Name, Contents, Update, app}){
-    const {key, focused, zIndex, defaultLeft, defaultTop } = app;
-    const [[left, top, width, height], setCoords] = useState([defaultLeft, defaultTop, 674, 426]);
-    const [maximized, setMaximized] = useState(false);
+function Window({Name, Contents, Update, app,WindowSize}){
+    const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
+    const {key, focused, zIndex} = app;
+    const {WindowHeight,WindowWidth} = WindowSize;
+    const [[maximized,fix_maximized], setMaximized] = useState([false,false]);
     const [minimized, setMinimized] = useState(false);
     const [resizing, setResizing] = useState(false);
     const [moving, setMoving] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
+        window.addEventListener("resize", setResizing);
         if (focused && minimized) {
             setMinimized(false);
         }
     }, [focused]);
-    
+    const [[left, top, width, height], setCoords] = useState([getRandom((window.innerWidth-WindowWidth)/6, (window.innerWidth-WindowWidth)/1.5), 
+                                                              getRandom(30,(window.innerHeight-WindowHeight)-40), 
+                                                              WindowWidth, 
+                                                              WindowHeight]);
+
+    if (!maximized && ((window.innerHeight<=500 || window.innerWidth<=500)||width+left>window.innerWidth||height+top>window.WindowHeight)) setMaximized([true,true])
+    else if (fix_maximized && !((window.innerHeight<=500 || window.innerWidth<=500)||width+left>window.innerWidth||height+top>window.WindowHeight)) setMaximized([false,false])
+   
     return (
         <div className={classes('Window',key,resizing && 'resizing',focused && 'focused', moving && 'moving',  minimized && 'minimized', maximized && 'maximized')}
             style={{ left, top, width, height, zIndex}}
             onMouseDown={e=>{
+                if(!focused) navigate(key);
+            }}
+            onWheel={e=>{
                 if(!focused) navigate(key);
             }}
         >
@@ -36,11 +48,12 @@ function Window({Name, Contents, Update, app}){
                     const onMouseMove = e => {
                         const dx = e.clientX - offsetX;
                         const dy = e.clientY - offsetY;
+
                         setCoords([
-                          left + dx,
-                          top + dy,
-                          width,
-                          height,
+                          (left+dx >= 0 && left + dx + width <= window.innerWidth ? left + dx:(left+dx<=0?0:window.innerWidth-width)),
+                          (top +dy >= 0 && top  + dy + height <= window.innerHeight ? top + dy:(top+dy<=0?0:window.innerHeight-height)),
+                          (width),
+                          (height),
                         ]);
                     }
 
@@ -58,7 +71,7 @@ function Window({Name, Contents, Update, app}){
                 </div>
                 <div className="button-container">
                     <Link className="button button-minimize" to="/" onClick={e=>{setMinimized(true)}}>⚊</Link>
-                    <div className="button button-maximize" onClick={e=>{setMaximized(!maximized)}}>☐</div>
+                    <div className="button button-maximize" onClick={e=>{setMaximized([!maximized,fix_maximized])}}>☐</div>
                     <Link className="button button-close" to="/" onClick={() => Update({ closing: true })}>✕</Link>
                 </div>
             </div>
@@ -66,7 +79,7 @@ function Window({Name, Contents, Update, app}){
             {/* ############    Contents     ############ */}
             <div className='contents'>
                 {Contents}
-                <div className='interceptor'></div>
+                <div className='interceptor' style={{display:focused&&moving&&resizing&&"none"}}></div>
             </div>
             {/* ############ Resizing Window ############ */}
             {
@@ -92,27 +105,41 @@ function Window({Name, Contents, Update, app}){
                                     let newTop = top;
                                     let newWidth = width;
                                     let newHeight = height;
+                                    
+                                    console.log("offsetY : ",offsetY,"dy : ",dy,"newTop : ",newTop,"e.clientY : ",e.clientY)
+
                                     sides.forEach(side => {
                                         switch (side) {
                                             case 'top':
-                                                newTop += dy;
-                                                newHeight -= dy;
+                                                newTop = (dy + top >= 0) ? top+dy : 0;
+                                                newHeight = (dy + top >= 0) ? newHeight-dy:newHeight+offsetY;
+                                                newTop = newHeight>300?newTop:offsetY+height-300
+                                                newHeight = newHeight>300?newHeight:300
                                                 break;
                                             case 'left':
-                                                newLeft += dx;
-                                                newWidth -= dx;
+                                                newLeft = (dx + left >= 0) ? left+dx : 0;
+                                                newWidth = (dx + left >= 0) ? newWidth-dx:newWidth+offsetX;
+                                                newLeft = newWidth>300?newLeft:offsetX+width-300
+                                                newWidth = newWidth>300?newWidth:300
                                                 break;
                                             case 'bottom':
-                                                newHeight += dy;
+                                                newHeight= (height+top+dy<=window.innerHeight)?newHeight+dy:window.innerHeight-top;
+                                                newHeight = newHeight>300?newHeight:300
                                                 break;
                                             case 'right':
-                                                newWidth += dx;
+                                                newWidth = (width+left+dx<=window.innerWidth)?newWidth+dx:window.innerWidth-left;
+                                                newWidth = newWidth>300?newWidth:300
                                                 break;
                                             default:
                                         }
                                     })
-                                    if (newWidth < 600 || newHeight < 60) return;
-                                    setCoords([newLeft,newTop,newWidth,newHeight]);
+
+                                    setCoords([
+                                        newLeft,
+                                        newTop,
+                                        newWidth,
+                                        newHeight
+                                    ]);
                                 }
 
                                 const onMouseUp = e => {
