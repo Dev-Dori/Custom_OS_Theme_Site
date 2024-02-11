@@ -79,7 +79,7 @@ function Window({Name, Contents, Update, app,WindowSize}){
             {/* ############    Contents     ############ */}
             <div className='contents'>
                 {Contents}
-                <div className='interceptor' style={{display:focused&&moving&&resizing&&"none"}}></div>
+                <div className='interceptor' style={{display:focused&&!moving&&!resizing&&"none"}}></div>
             </div>
             {/* ############ Resizing Window ############ */}
             {
