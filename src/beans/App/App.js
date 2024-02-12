@@ -8,6 +8,8 @@ function App(WindowComponent,PinTaskbar){
     this.opened = false;
     this.focused = false;
     this.closing = false;
+    this.minimized = false;
+    this.maximized = false;
     this.PinTaskbar = PinTaskbar?true:false;
     this.WindowHeight = 750;
     this.WindowWidth = 450;

@@ -11,7 +11,7 @@ function Window({Name, Contents, Update, app,WindowSize}){
     const {key, focused, zIndex} = app;
     const {WindowHeight,WindowWidth} = WindowSize;
     let [[maximized,fix_maximized], setMaximized] = useState([false,false]);
-    const [minimized, setMinimized] = useState(false);
+    const [minimized, setMinimized] = useState(app.minimized);
     const [resizing, setResizing] = useState(false);
     const [WindowResizeing, setWindowResizeing] = useState(false);
     const [moving, setMoving] = useState(false);
@@ -24,6 +24,7 @@ function Window({Name, Contents, Update, app,WindowSize}){
     useEffect(() => {
         window.addEventListener("resize", setWindowResizeing);
         if (focused && minimized) setMinimized(false);
+        return () => window.removeEventListener("resize",setWindowResizeing)
     }, [focused]);
     if(!maximized && left+width>window.innerWidth && window.innerWidth-width>=0) left=window.innerWidth-width
     if(!maximized && top+height>window.innerHeight && window.innerHeight-height>=0) top=window.innerHeight-height
@@ -86,16 +87,16 @@ function Window({Name, Contents, Update, app,WindowSize}){
                 
                 <div className="button-container">
                     <Link className="button button-close" to="/" onClick={() => Update({ closing: true })}>
-                        <img className="normal" src={IconMap.Close}/>
-                        <img className="hover" src={IconMap.HoverClose}/>
+                        <img className="normal" alt='close' src={IconMap.Close}/>
+                        <img className="hover"  alt='close' src={IconMap.HoverClose}/>
                     </Link>
                     <Link className="button button-minimize" to="/" onClick={e=>{setMinimized(true)}}>
-                        <img className="normal" src={IconMap.Minimize}/>
-                        <img className="hover" src={IconMap.Hoverminimize}/>
+                        <img className="normal" alt='Minimize' src={IconMap.Minimize}/>
+                        <img className="hover"  alt='Minimize' src={IconMap.Hoverminimize}/>
                     </Link>
                     <div className="button button-maximize" onClick={e=>{setMaximized([!maximized,fix_maximized])}}>
-                        <img className="normal" src={IconMap.Maximize}/>
-                        <img className="hover" src={IconMap.HoverMaximize}/>
+                        <img className="normal" alt='maximized' src={IconMap.Maximize}/>
+                        <img className="hover"  alt='maximized' src={IconMap.HoverMaximize}/>
                     </div>
                 </div>
             </div>

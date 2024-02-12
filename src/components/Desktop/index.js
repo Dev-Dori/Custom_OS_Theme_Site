@@ -1,6 +1,6 @@
 import React from 'react'
 import { FileSystemContext } from 'contexts'
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Icon } from 'components';
 import './style.scss'
@@ -11,39 +11,36 @@ import { Link } from 'react-router-dom';
 function Desktop(){
     const [FileSystem,ReloadDir]  = useContext(FileSystemContext);
     const DesktopDir = FileSystem.GetDesktopDir();
-    const apps = FileSystem.GetApps();
+    const [apps,GetApp] = useState(FileSystem.GetApps());
     const history = useNavigate();
     const location = useLocation();
     const currentUrl = location.pathname;
 
-    useEffect(() => {
-        apps && apps.forEach(app => {
-            if (app.closing) {
-            setTimeout(() => {
-                app.closing = false;
-                app.opened = false;
-                ReloadDir();
-            }, 100);
-            }
-        });
-    });
-
-    useEffect(() => {
+    const refresh=()=>{
         let change = false;
         apps && apps.forEach(app => {
-            const focused = currentUrl.replace("/","") === app.key;
-            if (focused && !app.opened){
-                app.opened = true;
-                change = true;
+            // URL에서 호출된 정보를 기준으로 포커스 여부 판단 
+            const focused = (currentUrl.split("/")[1] === app.key);
+            // 창이 닫힌 상태 -> 새로 열기
+            if (app.closing) {
+                app.closing = false;
+                app.opened = false;
+                app.focused = false;
+                change=true;
             }
-            if (focused && !app.focused) {
+            // 창이 열려있는 상태 -> 다시 창을 클릭 한 경우
+            if (focused && (!app.opened||!app.focused)){
+                app.opened = true;
                 app.zIndex = Math.max(...apps.map(app => app.zIndex)) + 1;
                 change = true;
             }
-            app.focused = focused;
+            app.focused = focused; // 무한반복을 방지하기 위함
         });
         if(change) ReloadDir();
-    }, [currentUrl]);
+    }
+    
+    useEffect(() => {refresh()});
+
 
 
     return (
@@ -74,7 +71,7 @@ function Desktop(){
                     <app.WindowComponent key={app.key} app={app}
                         Update={patch =>{
                             Object.assign(app, patch);
-                            ReloadDir()
+                            GetApp(apps)
                         ;}}
                     />
                 ))}

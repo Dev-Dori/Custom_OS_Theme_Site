@@ -1,9 +1,10 @@
 import { FileSystemContext } from 'contexts'
 import { useContext,useState,useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Icon } from 'components'; 
 import { classes } from 'common/utils';
 import './style.scss'
+
 
 const getClock = () => {
     const two = (x) => x < 10 ? `0${x}` : x;
@@ -18,6 +19,8 @@ const getClock = () => {
   
 
 function Taskbar(){
+    const location = useLocation();
+    const currentUrl = location.pathname;
     const [FileSystem,ReloadDir] = useContext(FileSystemContext);
     const apps = FileSystem.GetApps();
     const [time, setTime] = useState(new Date());
@@ -31,15 +34,14 @@ function Taskbar(){
     }, []);
 
 
+    // apps && apps.filter(app=>app.opened || app.PinTaskbar).map(app=>console.log(app.key))
     return (
         <div className="Taskbar">
             <div></div>
             <div className='shortcut-container'>
-                {/* <Link className='shortcut pinned' to='menu'>
-                    <Icon iconKey={'windows'}/>
-                </Link> */}
                 {apps && apps.filter(app=>app.opened || app.PinTaskbar).map(app=>(
-                    <Link key={'shortcut-'+app.key} className={classes('shortcut','pinned',app.opened&&'active')} to={app.key}>
+                    <Link key={'shortcut-'+app.key} className={classes('shortcut','pinned',app.opened&&'active')}
+                          to={app.key===currentUrl.split("/")[1]?"/":app.key}>
                         <Icon iconKey={app.key}/>
                     </Link>)
                 )}
