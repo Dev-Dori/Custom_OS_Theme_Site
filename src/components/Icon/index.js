@@ -1,5 +1,5 @@
 import React from 'react';
-import * as IconMap from 'images/Icon';
+import * as IconMap from 'images';
 import { classes } from 'common/utils';
 
 function Icon({ iconKey, iconUrl}) {

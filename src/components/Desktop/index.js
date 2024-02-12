@@ -4,7 +4,8 @@ import { useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Icon } from 'components';
 import './style.scss'
-import background from 'images/Wallpapers/background.jpg'
+// import background from 'images/Wallpapers/background2.webp';
+import { Wallpapers as background } from 'images';
 import { Link } from 'react-router-dom';
 
 function Desktop(){

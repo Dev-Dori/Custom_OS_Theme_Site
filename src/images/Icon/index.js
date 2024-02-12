@@ -8,4 +8,11 @@ export { default as Terminal } from './Desktop/Terminal.png';
 export { default as Blog } from './Desktop/Browser.png';
 
 // export { default as windows } from './Taskbar/windows.webp'
-export { default as windows } from './Taskbar/home.png'
+export { default as windows } from './Taskbar/home.png';
+
+export { default as HoverClose } from './Window/hover-close.webp'
+export { default as Close } from './Window/close.webp'
+export { default as HoverMaximize } from './Window/hover-maximize.webp'
+export { default as Maximize } from './Window/maximize.webp'
+export { default as Hoverminimize } from './Window/hover-minimize.webp'
+export { default as Minimize } from './Window/minimize.webp'

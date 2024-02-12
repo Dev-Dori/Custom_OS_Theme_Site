@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { classes } from 'common/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from 'components';
-// import $ from "jquery";
+import * as IconMap from 'images';
 import './style.scss';
 
 function Window({Name, Contents, Update, app,WindowSize}){
@@ -25,7 +25,6 @@ function Window({Name, Contents, Update, app,WindowSize}){
         window.addEventListener("resize", setWindowResizeing);
         if (focused && minimized) setMinimized(false);
     }, [focused]);
-
     if(!maximized && left+width>window.innerWidth && window.innerWidth-width>=0) left=window.innerWidth-width
     if(!maximized && top+height>window.innerHeight && window.innerHeight-height>=0) top=window.innerHeight-height
     if (!maximized && ((window.innerHeight<=height || window.innerWidth<=width ))) setMaximized([true,true])
@@ -36,10 +35,10 @@ function Window({Name, Contents, Update, app,WindowSize}){
             style={{ left, top, width, height, zIndex}}
             onMouseDown={e=>{if(!focused) navigate(key);}}
             onWheel={e=>{if(!focused) navigate(key);}}
-            onDoubleClick={e=>{setMaximized([!maximized, false])}}
         >
             {/* ############    상단바     ############ */}
             <div className='toolbar' 
+                onDoubleClick={e=>{setMaximized([!maximized, false])}}
                 onMouseDown={e=>{
                     const offsetX = e.clientX;
                     const offsetY = e.clientY;
@@ -49,8 +48,8 @@ function Window({Name, Contents, Update, app,WindowSize}){
                         const dx = e.clientX - offsetX;
                         const dy = e.clientY - offsetY;
 
-                        // if(top+dy<0) setMaximized([true, false]); // 어플리케이션을 최상단으로 드래그시 전체화면으로 변경 (주석 해제시 하단 if 문을 else if 로 변경할것)
-                        if (maximized){  //전체 화면에서 상단바를 드래그 할때
+                        if(top+dy<-60) setMaximized([true, false]); // 어플리케이션을 최상단 위로 드래그시 전체화면으로 변경 (주석 해제시 하단 if 문을 else if 로 변경할것)
+                        else if (maximized){  //전체 화면에서 상단바를 드래그 할때
                             // 커서의 x좌표가 어플리케이션 너비의 절반값을 화면너비의 시작과 끝에서 제외한 범위 안에 들어왔을때 바가 커서 중앙으로 고정
                             if(width/2<e.clientX&&e.clientX<window.innerWidth-width/2) left = e.clientX-width/2 
                             // 커서의 x좌표가 좌측을 기준으로 어플리케이션 너비안에 들어왔을 경우 바 좌표를 왼쪽으로 고정
@@ -77,14 +76,27 @@ function Window({Name, Contents, Update, app,WindowSize}){
                     window.addEventListener('mousemove', onMouseMove);
                     window.addEventListener('mouseup', onMouseUp);
                 }}>
-                <div className='image-container'><Icon iconKey={app.key}/></div>
-                <div className='title-container'>
-                    <div className="name">{app.key}</div>
+
+                <div className='info-container'>
+                    <div className='image'><Icon iconKey={app.key}/></div>
+                    <div className='title'>
+                        <div className="name">{app.key}</div>
+                    </div>
                 </div>
+                
                 <div className="button-container">
-                    <Link className="button button-minimize" to="/" onClick={e=>{setMinimized(true)}}>⚊</Link>
-                    <div className="button button-maximize" onClick={e=>{setMaximized([!maximized,fix_maximized])}}>☐</div>
-                    <Link className="button button-close" to="/" onClick={() => Update({ closing: true })}>✕</Link>
+                    <Link className="button button-close" to="/" onClick={() => Update({ closing: true })}>
+                        <img className="normal" src={IconMap.Close}/>
+                        <img className="hover" src={IconMap.HoverClose}/>
+                    </Link>
+                    <Link className="button button-minimize" to="/" onClick={e=>{setMinimized(true)}}>
+                        <img className="normal" src={IconMap.Minimize}/>
+                        <img className="hover" src={IconMap.Hoverminimize}/>
+                    </Link>
+                    <div className="button button-maximize" onClick={e=>{setMaximized([!maximized,fix_maximized])}}>
+                        <img className="normal" src={IconMap.Maximize}/>
+                        <img className="hover" src={IconMap.HoverMaximize}/>
+                    </div>
                 </div>
             </div>
 
