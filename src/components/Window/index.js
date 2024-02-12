@@ -49,8 +49,8 @@ function Window({Name, Contents, Update, app,WindowSize}){
                         const dx = e.clientX - offsetX;
                         const dy = e.clientY - offsetY;
 
-                        if(top+dy<0) setMaximized([true, false]); // 어플리케이션을 최상단으로 드래그시 전체화면으로 변경 
-                        else if (maximized){  //전체 화면에서 상단바를 드래그 할때
+                        // if(top+dy<0) setMaximized([true, false]); // 어플리케이션을 최상단으로 드래그시 전체화면으로 변경 (주석 해제시 하단 if 문을 else if 로 변경할것)
+                        if (maximized){  //전체 화면에서 상단바를 드래그 할때
                             // 커서의 x좌표가 어플리케이션 너비의 절반값을 화면너비의 시작과 끝에서 제외한 범위 안에 들어왔을때 바가 커서 중앙으로 고정
                             if(width/2<e.clientX&&e.clientX<window.innerWidth-width/2) left = e.clientX-width/2 
                             // 커서의 x좌표가 좌측을 기준으로 어플리케이션 너비안에 들어왔을 경우 바 좌표를 왼쪽으로 고정
@@ -105,7 +105,7 @@ function Window({Name, Contents, Update, app,WindowSize}){
                     ['bottom', 'left'],
                     ['bottom', 'right'],
                 ].map(sides=>(
-                        <div key={sides.join('-')} className={classes('border', ...sides.map(side=>`border-${side}`))}
+                        <div key={sides.join('-')} className={classes('border', ...sides.map(side=>`border-${side}`))} style={{display:moving&&"none"}}
                             onMouseDown={e=>{
                                 const offsetX = e.clientX;
                                 const offsetY = e.clientY;
