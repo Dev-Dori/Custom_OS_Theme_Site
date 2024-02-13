@@ -9,7 +9,7 @@ import { useState } from 'react';
 function Screen(){
     const [_ReloadDir, SetReloadDir] = useState(0);
     const ReloadDir = () => SetReloadDir(_ReloadDir+1); 
-
+    console.log("최상위 프롭스 호출\n======================")
     return (
         <div className='Screen'>
             <FileSystemContext.Provider value={[RootDir.instance, ReloadDir]}>

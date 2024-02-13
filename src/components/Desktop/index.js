@@ -21,6 +21,12 @@ function Desktop(){
         apps && apps.forEach(app => {
             // URL에서 호출된 정보를 기준으로 포커스 여부 판단 
             const focused = (currentUrl.split("/")[1] === app.key);
+            if (currentUrl.split("/")[1]===""&&app.focused&&!app.closing){
+                app.minimized = true;
+                app.focused = false;
+                change=true
+            } else app.minimized = false;
+
             // 창이 닫힌 상태 -> 새로 열기
             if (app.closing) {
                 app.closing = false;
@@ -40,7 +46,6 @@ function Desktop(){
     }
     
     useEffect(() => {refresh()});
-
 
 
     return (
@@ -67,6 +72,7 @@ function Desktop(){
                 )}
             </div>
             <div className='window-container'>
+                {console.log(apps && apps.filter(app=>app.opened))}
                 {apps && apps.filter(app=>app.opened).map(app=>(
                     <app.WindowComponent key={app.key} app={app}
                         Update={patch =>{

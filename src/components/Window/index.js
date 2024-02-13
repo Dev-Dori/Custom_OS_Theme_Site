@@ -6,7 +6,7 @@ import { Icon } from 'components';
 import * as IconMap from 'images';
 import './style.scss';
 
-function Window({Name, Contents, Update, app,WindowSize}){
+function Window({Contents, Update, app,WindowSize}){
     const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
     const {key, focused, zIndex} = app;
     const {WindowHeight,WindowWidth} = WindowSize;
@@ -24,13 +24,14 @@ function Window({Name, Contents, Update, app,WindowSize}){
     useEffect(() => {
         window.addEventListener("resize", setWindowResizeing);
         if (focused && minimized) setMinimized(false);
+        else if (app.minimized && !minimized) setMinimized(app.minimized)
         return () => window.removeEventListener("resize",setWindowResizeing)
     }, [focused]);
     if(!maximized && left+width>window.innerWidth && window.innerWidth-width>=0) left=window.innerWidth-width
     if(!maximized && top+height>window.innerHeight && window.innerHeight-height>=0) top=window.innerHeight-height
     if (!maximized && ((window.innerHeight<=height || window.innerWidth<=width ))) setMaximized([true,true])
     else if (fix_maximized && !((window.innerHeight<=height || window.innerWidth<=width ))) setMaximized([false,false])
-
+    
     return (
         <div className={classes('Window',key,resizing && 'resizing',focused && 'focused', moving && 'moving',  minimized && 'minimized', maximized && 'maximized')}
             style={{ left, top, width, height, zIndex}}
