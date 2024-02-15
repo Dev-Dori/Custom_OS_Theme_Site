@@ -12,9 +12,9 @@ function Desktop(){
     const [FileSystem,ReloadDir]  = useContext(FileSystemContext);
     const DesktopDir = FileSystem.GetDesktopDir();
     const [apps,GetApp] = useState(FileSystem.GetApps());
-    const history = useNavigate();
+    const navigate = useNavigate();
     const location = useLocation();
-    const currentUrl = location.pathname;
+    let currentUrl = location.pathname;
 
     const refresh=()=>{
         let change = false;
@@ -46,6 +46,10 @@ function Desktop(){
     }
     
     useEffect(() => {refresh()});
+    useEffect(() => {
+        window.addEventListener("keydown", (event)=>{if(event.key=="Escape"&&window.location.pathname!="/"){navigate("/")}})
+        return () => {arguments.callee}
+    },[])
 
 
     return (
@@ -72,7 +76,6 @@ function Desktop(){
                 )}
             </div>
             <div className='window-container'>
-                {console.log(apps && apps.filter(app=>app.opened))}
                 {apps && apps.filter(app=>app.opened).map(app=>(
                     <app.WindowComponent key={app.key} app={app}
                         Update={patch =>{
