@@ -86,7 +86,7 @@ function Window({Contents, Update, app,WindowSize}){
                     </div>
                 </div>
                 
-                <div className="button-container">
+                <div className="button-container" style={{filter:!focused&&"grayscale(100%)"}}>
                     <Link className="button button-close" to="/" onClick={() => Update({ closing: true })}>
                         <img className="normal" alt='close' src={IconMap.Close}/>
                         <img className="hover"  alt='close' src={IconMap.HoverClose}/>
