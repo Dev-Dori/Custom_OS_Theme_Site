@@ -49,7 +49,7 @@ function Desktop(){
     useEffect(() => {refresh()});
     useEffect(() => {
         window.addEventListener("keydown", (event)=>{if(event.key=="Escape"&&window.location.pathname!="/"){navigate("/")}})
-        return () => {arguments.callee}
+        // return () => {arguments.callee}
     },[])
 
 
@@ -61,10 +61,10 @@ function Desktop(){
             <div className='app-container'>
                 {GetDesktop.key.map(key=>{
                     if(!GetDesktop.children[key].href){
-                        console.log(key, apps,GetDesktop.children[key].WindowComponent.name)
+                        console.log(key, apps,GetDesktop.children[key].name)
                         return(
-                        <Link to={GetDesktop.children[key].WindowComponent.name} className='shortcut' id={'cortcut-'+key} key={key}>
-                            <Icon iconUrl={apps[GetDesktop.children[key].WindowComponent.name].icon}/> 
+                        <Link to={GetDesktop.children[key].name} className='shortcut' id={'cortcut-'+key} key={key}>
+                            <Icon iconUrl={apps[GetDesktop.children[key].name].icon}/> 
                             <div className='name'>{key}</div>
                         </Link>)
                     }else{
@@ -79,7 +79,7 @@ function Desktop(){
             <div className='window-container'>
                 {Object.keys(apps).filter(key=>apps[key].opened).map(key=>{
                         let application = Object.assign(apps[key],{"key":key});
-                        return(<application.WindowComponent key={application.WindowComponent.name} app={application}
+                        return(<application.WindowComponent key={application.name} app={application}
                             Update={patch =>{
                                 console.log(patch)
                                 Object.assign(application, patch);

@@ -9,7 +9,7 @@ function FileExplorer(props){
         <Window 
         Update = {Update}
         app = {app}
-        WindowSize = {WindowSize}
+        // WindowSize = {WindowSize}
         ClassName='Window FileExplorer'
         Contents={(<div>FileExplorer</div>)}
     />);

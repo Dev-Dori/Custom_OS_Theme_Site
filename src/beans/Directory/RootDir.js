@@ -33,11 +33,11 @@ class RootDir{
             return this.rootDir;
         }
 
-        const termianl = new App(Terminal,true,IconMap.termianl);
-        const fileExplorer = new App(FileExplorer,true,IconMap.fileExplorer);
-        const system = new App(System,false,IconMap.system);
-        const browser = new App(Browser,true,IconMap.browser);
-        const projects = new App(Project,true,IconMap.project);
+        const termianl = new App("Terminal",Terminal,true,IconMap.termianl);
+        const fileExplorer = new App("FileExplorer",FileExplorer,true,IconMap.fileExplorer);
+        const system = new App("System",System,false,IconMap.system);
+        const browser = new App("Browser",Browser,true,IconMap.browser);
+        const projects = new App("Project",Project,true,IconMap.project);
 
 
         this.rootDir = new Dir({

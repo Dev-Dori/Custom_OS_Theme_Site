@@ -3,8 +3,9 @@ import { none } from 'images';
 let count = 1;
 
 
-function App(WindowComponent,PinTaskbar, icon){ 
+function App(name, WindowComponent,PinTaskbar, icon){ 
     const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
+    this.name = name;
     this.WindowComponent = WindowComponent;
     this.zIndex = 1;
     this.opened = false;
