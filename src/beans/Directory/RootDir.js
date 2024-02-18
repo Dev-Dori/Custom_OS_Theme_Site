@@ -1,6 +1,7 @@
 import { Dir } from 'beans';
 import { App, LinkFile } from 'beans'; //SymlinkFile
 import { Terminal, FileExplorer, System, Github, Browser, Project } from 'windows';
+import * as IconMap from 'images';
 
 class RootDir{    
     GetUserDir(user="DevDori"){
@@ -31,36 +32,39 @@ class RootDir{
         if (this.rootDir){
             return this.rootDir;
         }
-        // new App(component, TaskbarPin)
-        const termianl = new App(Terminal,true);
-        const fileExplorer = new App(FileExplorer,true);
-        const system = new App(System);
-        const github = new App(Github,true);
-        const browser = new App(Browser,true);
-        const project = new App(Project,true);
+
+        const termianl = new App(Terminal,true,IconMap.termianl);
+        const fileExplorer = new App(FileExplorer,true,IconMap.fileExplorer);
+        const system = new App(System,false,IconMap.system);
+        const browser = new App(Browser,true,IconMap.browser);
+        const projects = new App(Project,true,IconMap.project);
+
 
         this.rootDir = new Dir({
             users: new Dir({
                 DevDori: new Dir({
                     apps: new Dir({
                         System : system,
-                        Brower: browser,
+                        Browser: browser,
                         Terminal : termianl, // new App('Terminal')
                         FileExplorer : fileExplorer,
-                        Projects : project,
+                        Project : projects,
                     }),
                     Desktop: new Dir({
                         System: system,
                         // System: new LinkFile('https://devdori.notion.site/Profile-b65bbb4fbb41417ab3c616dd84c43a28',system.Icon), // Desktop Icon
                         Files: fileExplorer,
-                        // Projects: project, 
+                        // Projects: projects, 
                         Terminal: termianl,
                         Blog: browser, 
-                        Github: new LinkFile('https://github.com/Dev-Dori',github.Icon), // Github Icon
+                        Github: new LinkFile('https://github.com/Dev-Dori',IconMap.github), // Github Icon
                     })
                 })
             })
         })
+
+
+        // console.log(test3, this.rootDir)
 
         return this.rootDir;
     }

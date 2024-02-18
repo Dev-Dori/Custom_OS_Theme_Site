@@ -1,7 +1,9 @@
+import { none } from 'images';
+
 let count = 1;
 
 
-function App(WindowComponent,PinTaskbar){ 
+function App(WindowComponent,PinTaskbar, icon){ 
     const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
     this.WindowComponent = WindowComponent;
     this.zIndex = 1;
@@ -10,9 +12,10 @@ function App(WindowComponent,PinTaskbar){
     this.closing = false;
     this.minimized = false;
     this.maximized = false;
-    this.PinTaskbar = PinTaskbar?true:false;
     this.WindowHeight = 750;
     this.WindowWidth = 450;
+    this.PinTaskbar = PinTaskbar||false;
+    this.icon = icon? icon : none;
     count++;
 }
 

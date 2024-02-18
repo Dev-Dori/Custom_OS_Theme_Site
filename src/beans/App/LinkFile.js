@@ -1,6 +1,6 @@
 function LinkFile(href, Icon){
     this.href = href;
-    this.Icon = Icon;
+    this.icon = Icon;
 }
 
 export default LinkFile;

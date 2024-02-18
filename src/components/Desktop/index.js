@@ -10,38 +10,39 @@ import { Link } from 'react-router-dom';
 
 function Desktop(){
     const [FileSystem,ReloadDir]  = useContext(FileSystemContext);
-    const DesktopDir = FileSystem.GetDesktopDir();
+    const GetDesktop = FileSystem.GetDesktopDir();
     const [apps,GetApp] = useState(FileSystem.GetApps());
+    console.log(GetDesktop)
+
     const navigate = useNavigate();
     const location = useLocation();
     let currentUrl = location.pathname;
 
     const refresh=()=>{
         let change = false;
-        apps && apps.forEach(app => {
+        for(let key in apps){
             // URL에서 호출된 정보를 기준으로 포커스 여부 판단 
-            const focused = (currentUrl.split("/")[1] === app.key);
-            if (currentUrl.split("/")[1]===""&&app.focused&&!app.closing){
-                app.minimized = true;
-                app.focused = false;
+            const focused = (currentUrl.split("/")[1] === key);
+            if (currentUrl.split("/")[1]===""&&apps[key].focused&&!apps[key].closing){
+                apps[key].minimized = true;
+                apps[key].focused = false;
                 change=true
-            } else app.minimized = false;
-
+            } else apps[key].minimized = false;
             // 창이 닫힌 상태 -> 새로 열기
-            if (app.closing) {
-                app.closing = false;
-                app.opened = false;
-                app.focused = false;
+            if (apps[key].closing) {
+                apps[key].closing = false;
+                apps[key].opened = false;
+                apps[key].focused = false;
                 change=true;
             }
             // 창이 열려있는 상태 -> 다시 창을 클릭 한 경우
-            if (focused && (!app.opened||!app.focused)){
-                app.opened = true;
-                app.zIndex = Math.max(...apps.map(app => app.zIndex)) + 1;
+            if (focused && (!apps[key].opened||!apps[key].focused)){
+                apps[key].opened = true;
+                apps[key].zIndex = Math.max(...Object.keys(apps).map(app => apps[app].zIndex)) + 1;
                 change = true;
             }
-            app.focused = focused; // 무한반복을 방지하기 위함
-        });
+            apps[key].focused = focused; // 무한반복을 방지하기 위함
+        }
         if(change) ReloadDir();
     }
     
@@ -52,38 +53,41 @@ function Desktop(){
     },[])
 
 
+    
     return (
         <div className='Desktop'>
             {/* <div className="Wallpaper" style={{backgroundImage: `linear-gradient(to top, rgba(19, 21, 25, 0.5), rgba(19, 21, 25, 0.5)),url(${background})`}}></div> */}
             <div className="Wallpaper" style={{backgroundImage: `url(${background})`}}></div>
             <div className='app-container'>
-                {DesktopDir.children.map(child=>{
-                    if(!child.href){
+                {GetDesktop.key.map(key=>{
+                    if(!GetDesktop.children[key].href){
+                        console.log(key, apps,GetDesktop.children[key].WindowComponent.name)
                         return(
-                        <Link to={child.key} className='shortcut' id={'cortcut-'+child.key} key={child.key}>
-                            {/* <div className={'Icon icon '+child.key} style={{backgroundImage: `url(${child.Icon})`}}></div> */}
-                            <Icon iconKey={child.key} />
-                            <div className='name'>{child.key}</div>
+                        <Link to={GetDesktop.children[key].WindowComponent.name} className='shortcut' id={'cortcut-'+key} key={key}>
+                            <Icon iconUrl={apps[GetDesktop.children[key].WindowComponent.name].icon}/> 
+                            <div className='name'>{key}</div>
                         </Link>)
                     }else{
                         return(
-                        <a href={child.href} className='shortcut' id={'cortcut-'+child.key} key={child.key} target='blank'>
-                            {/* <div className={'Icon icon '+child.key} style={{backgroundImage: `url(${child.Icon})`}}></div> */}
-                            <Icon iconKey={child.key} />
-                            <div className='name'>{child.key}</div>
+                        <a href={GetDesktop.children[key].href} className='shortcut' id={'cortcut-'+key} key={key} target='blank'>
+                            <Icon iconUrl={GetDesktop.children[key].icon}/>
+                            <div className='name'>{key}</div>
                         </a>)
-                    }}
-                )}
+                    }
+                })}
             </div>
             <div className='window-container'>
-                {apps && apps.filter(app=>app.opened).map(app=>(
-                    <app.WindowComponent key={app.key} app={app}
-                        Update={patch =>{
-                            Object.assign(app, patch);
-                            GetApp(apps)
-                        ;}}
-                    />
-                ))}
+                {Object.keys(apps).filter(key=>apps[key].opened).map(key=>{
+                        let application = Object.assign(apps[key],{"key":key});
+                        return(<application.WindowComponent key={application.WindowComponent.name} app={application}
+                            Update={patch =>{
+                                console.log(patch)
+                                Object.assign(application, patch);
+                                GetApp(apps)
+                            ;}}
+                        />)
+                    })
+                }
             </div>
         </div>
     );

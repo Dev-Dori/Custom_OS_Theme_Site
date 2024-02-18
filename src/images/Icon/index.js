@@ -1,4 +1,6 @@
 // https://github.com/icon11-community 아이콘
+export { default as none } from './Desktop/FileExplorer.png';
+
 export { default as Projects } from './Desktop/Project.png';
 export { default as Documents } from './Desktop/Documents.png';
 export { default as Files } from './Desktop/FileExplorer.png';

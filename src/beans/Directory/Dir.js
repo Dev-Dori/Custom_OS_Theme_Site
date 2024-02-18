@@ -3,19 +3,18 @@ import { RootDir } from 'beans';
 class Dir extends RootDir{
     constructor(children) {
         super(null);
-        this.children = Object.keys(children).map(key => {
+        this.key = Object.keys(children)
+        this.children = Object.assign({}, ...Object.keys(children).map(key => {
             const child = children[key];
-            child.key = key;
             child.parent = this;
-            return child;
-        });
+            return {[key]:child};
+        }))
     }
-
     getChild(...pathKeys) {
         let dir = this;
         for (const dirKey of pathKeys) {
             if (!(dir instanceof Dir)) return undefined;
-            dir = dir.children.find(c => c.key === dirKey);
+            dir = dir.children[dirKey];
         }
         return dir;
     };

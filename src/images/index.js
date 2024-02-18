@@ -2,13 +2,14 @@ export { default as Wallpapers } from './Wallpapers/background.webp'
 
 
 // https://github.com/icon11-community 아이콘
-export { default as Projects } from './Icon/Desktop/Project.png';
-export { default as Documents } from './Icon/Desktop/Documents.png';
-export { default as Files } from './Icon/Desktop/FileExplorer.png';
-export { default as System } from './Icon/Desktop/Desktop.png';
-export { default as Github } from './Icon/Desktop/Github.png';
-export { default as Terminal } from './Icon/Desktop/Terminal.png';
-export { default as Blog } from './Icon/Desktop/Browser.png';
+export { default as none } from './Icon/Desktop/FileExplorer.png';
+export { default as project } from './Icon/Desktop/Project.png';
+export { default as documents } from './Icon/Desktop/Documents.png';
+export { default as fileExplorer } from './Icon/Desktop/FileExplorer.png';
+export { default as system } from './Icon/Desktop/Desktop.png';
+export { default as github } from './Icon/Desktop/Github.png';
+export { default as termianl } from './Icon/Desktop/Terminal.png';
+export { default as browser } from './Icon/Desktop/Browser.png';
 
 // export { default as windows } from './Icon/Taskbar/windows.webp'
 export { default as windows } from './Icon/Taskbar/home.png';

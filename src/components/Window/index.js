@@ -8,7 +8,8 @@ import './style.scss';
 
 function Window({Contents, Update, app,WindowSize}){
     const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
-    const {key, focused, zIndex} = app;
+    const {key,focused, zIndex} = app;
+    console.log(key)
     const {WindowHeight,WindowWidth} = WindowSize;
     let [[maximized,fix_maximized], setMaximized] = useState([false,false]);
     const [minimized, setMinimized] = useState(app.minimized);
@@ -80,7 +81,7 @@ function Window({Contents, Update, app,WindowSize}){
                 }}>
 
                 <div className='info-container'>
-                    <div className='image'><Icon iconKey={app.key}/></div>
+                    <div className='image'><Icon iconUrl={app.icon}/></div>
                     <div className='title'>
                         <div className="name">{app.key}</div>
                     </div>
