@@ -107,7 +107,9 @@
     background-color: $color-light;
     display: flex;
     flex-direction: column;
-    border-bottom: solid 1px #CCC;
+    outline-color: #CCC;
+    outline-style: auto;
+    outline-width: initial;
     overflow: hidden;
     height: 29px;
     position: relative;
