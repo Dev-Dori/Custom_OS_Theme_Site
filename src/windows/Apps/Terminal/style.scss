@@ -1,16 +1,13 @@
 @-webkit-keyframes blink{
-    0% {opacity: 0;}
-    100% {opacity: 1;}
+    50% {background-color:transparent;color:white}
 }
   
 @-moz-keyframes blink{
-    0% {opacity: 0;}
-    100% {opacity: 1;}
+    50% {background-color:transparent;color:white}
 }
 
 @keyframes blink{
-    0% {opacity: 0;}
-    100% {opacity: 1;}
+    50% {background-color:transparent;color:white}
 }
 
 .Terminal-Body{
@@ -47,14 +44,10 @@
             border: none;
             margin: 0;
             background-color: #ffff;
-            color: #000;
-            animation: opening .2s;
-            -webkit-animation: blink 0.57s ease-in-out infinite alternate;
-            -moz-animation: blink 0.57s ease-in-out infinite alternate;
-            animation: blink 0.57s ease-in-out infinite alternate;
-            &:before{
-                content: "\00a0";
-            }
+            color:#252a33;
+            -webkit-animation: blink 1s step-end 1s infinite;
+            -moz-animation: blink 1s step-end 1s infinite;
+            animation: blink 1s step-end 1s infinite;
         }
     }
 
