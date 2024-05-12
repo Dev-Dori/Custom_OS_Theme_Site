@@ -63,7 +63,7 @@ function Terminal({app, Update, FileSystem}){
             setCommand(commandhistory[cmdIndex])
             setCursorPosition(commandhistory[cmdIndex].length)
             setCommandIndex([cmdIndex,commandIndex[1]])
-            
+            event.preventDefault(); // 방향키 제어시 스크롤 움직임 방지
         }
     }
 
