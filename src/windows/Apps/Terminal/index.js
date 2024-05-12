@@ -46,7 +46,7 @@ function Terminal({app, Update, FileSystem}){
         }else if(event.key==="Enter") {
             inputCommand(command)
             setCursorPosition(0)
-            setCommandIndex([getCommandHistory().length+1,""])
+            setCommandIndex([command.length>0?getCommandHistory().length+1:getCommandHistory().length,""])
             setCommand("")
         }else if(event.key==="Backspace"){ 
             setCommand(command.substring(0,cursorPosition-1)+command.substring(cursorPosition))
@@ -60,6 +60,7 @@ function Terminal({app, Update, FileSystem}){
         }else if(event.key==="ArrowUp" || event.key==="ArrowDown"){
             let commandhistory=getCommandHistory().concat([commandIndex[1]])
             let cmdIndex=event.key==="ArrowUp"?commandIndex[0]-1>=0?commandIndex[0]-1:0:commandIndex[0]+1<commandhistory.length?commandIndex[0]+1:commandIndex[0]
+            console.log(commandhistory,commandhistory[cmdIndex],cmdIndex)
             setCommand(commandhistory[cmdIndex])
             setCursorPosition(commandhistory[cmdIndex].length)
             setCommandIndex([cmdIndex,commandIndex[1]])
