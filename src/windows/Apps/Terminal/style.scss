@@ -49,6 +49,8 @@
             -moz-animation: blink 1s step-end 1s infinite;
             animation: blink 1s step-end 1s infinite;
         }
+
+
     }
 
     .terminal-mobile-input{
@@ -58,6 +60,19 @@
         left: 0;
         right: 0;
         opacity: 0;
+    }
+
+    .terminal-output-ls{
+        margin: 15px;
+    }
+
+    .Dir {
+        color: #65a6ca;
+        font-weight: 700;
+    }
+
+    .App {
+        color: #9dd55e;
     }
 
 }

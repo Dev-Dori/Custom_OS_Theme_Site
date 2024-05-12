@@ -3,7 +3,6 @@ import { ComingSoon } from 'windows';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style.scss';
-import { none } from 'images';
 
 function Terminal({app, Update, FileSystem}){
     const navigate = useNavigate();
@@ -21,7 +20,6 @@ function Terminal({app, Update, FileSystem}){
     ]);
     
     useEffect(()=>{
-        console.log('렌더링 발생')
         scrollToBottom();
         window.addEventListener("keydown",handleKeyDownEvent)
         return () => window.removeEventListener("keydown",handleKeyDownEvent);
@@ -61,7 +59,7 @@ function Terminal({app, Update, FileSystem}){
             let commandhistory=getCommandHistory().concat([commandIndex[1]])
             let cmdIndex=event.key==="ArrowUp"?commandIndex[0]-1>=0?commandIndex[0]-1:0:commandIndex[0]+1<commandhistory.length?commandIndex[0]+1:commandIndex[0]
             console.log(commandhistory,commandhistory[cmdIndex],cmdIndex)
-            setCommand(commandhistory[cmdIndex])
+            setCommand(commandhistory[cmdIndex].replaceAll("&lt;","<").replaceAll("&gt;",">"))
             setCursorPosition(commandhistory[cmdIndex].length)
             setCommandIndex([cmdIndex,commandIndex[1]])
             event.preventDefault(); // 방향키 제어시 스크롤 움직임 방지
@@ -73,6 +71,32 @@ function Terminal({app, Update, FileSystem}){
             return tmpCmdData.type==="input"&&tmpCmdData.value&&tmpCmdData.value[0]!=="^"
         }).map(tmpCmdData=>tmpCmdData.value)
     }
+
+    const getAbsolutePath=(path)=>{
+        if(!path) return;
+        if(path==="~") path=`/users/${user}`
+        else if(path.substr(0,2)==="~/") path=`/users/${user}`+path.replace("~","")
+        else if(path.substr(0,2)==="./") path=`${workDir}/${path.replaceAll("./","")}`
+        path=(path&&path[0]==="/"?path:`${workDir==="/"?"":workDir}/${path}`).split("/")
+        path=path.filter(x=>x)
+        //상위 디렉토리로 이동
+        while(path.indexOf("..")!==-1) path.splice(path.indexOf("..")-1,2)
+        return path
+    }
+
+    const getListSegments=(path)=>{
+        while(path.indexOf("..")!==-1) path.splice(path.indexOf("..")-1,2)
+        let tmpdir = FileSystem
+        path&&path.forEach(EachDirName=>{
+            if((tmpdir&&tmpdir.getChild(EachDirName))||!EachDirName){
+                tmpdir=tmpdir.getChild(EachDirName)
+            }else{
+                tmpdir=false;
+                return;
+            }
+        })
+        return tmpdir
+    }
     
     const execCommand = (cmd, output) => {
         let cmdData=(cmd!==undefined)?[...terminalCommandData,{type:"input", value:cmd, workDir:workDir.replace(`/users/${user}`||`/users/${user}}/`,"~")}]:terminalCommandData
@@ -81,81 +105,94 @@ function Terminal({app, Update, FileSystem}){
     }
 
     const inputCommand = (cmd) => {
+        cmd=cmd.replaceAll("<","&lt;").replaceAll(">","&gt;")
         switch(cmd.split(" ")[0]){
             case 'help':{
-                execCommand(cmd,[
+                let CommandOutput=[
                                 "help   \t\tshow all the possible commands",
                                 "whoami \t\tdisplay information about DevDori",
+                                "cd     \t\tchange the working directory",
+                                "ls     \t\tlist directory contents",
+                                "pwd    \t\tPrint the name of the current working directory.",
                                 "history\t\tDisplay or manipulate the history list.",
                                 "clear  \t\tclear the terminal screen",
-                                "pwd    \t\tPrint the name of the current working directory.",
                                 ].join("\n")
-                            )
-                break;
+
+                execCommand(cmd,CommandOutput)
+                return CommandOutput;
             }
 
             case 'whoami':{
                 execCommand(cmd, user)
-                break;
+                return user;
             }
 
             case 'history': {
-                execCommand(cmd,getCommandHistory().concat("history").join("\n"))
-                break;
+                let CommandOutput=getCommandHistory().concat("history").map((cmd,line)=>`${line+1}\t${cmd}`).join("\n")
+                execCommand(cmd,CommandOutput)
+                return CommandOutput;
             }
 
             case 'clear':{
                 console.log(terminalCommandData.length)
                 terminalCommandData[0]={type: "clear", value:terminalCommandData.length}
                 execCommand(cmd)
-                break;
+                return;
             }
 
             case 'pwd': {
                 execCommand(cmd,workDir)
-                break;
+                return workDir;
             }
 
             case 'cd':{
                 execCommand(cmd,"")
-
-                let path=cmd.split(" ")[1]
-                if(!path) return;
-
-                if(path==="~") path=`/users/${user}`
-                else if(path.substr(0,2)==="~/") path=`/users/${user}`+path.replace("~","")
-                path=(path&&path[0]==="/"?path:`${workDir==="/"?"":workDir}/${path}`).split("/")
-                path=path.filter(x=>x)
-
-                //상위 디렉토리로 이동
-                while(path.indexOf("..")!==-1) path.splice(path.indexOf("..")-1,2)
-
-                let tmpdir = FileSystem, existsdir=true
-                path&&path.forEach(EachDirName=>{
-                    if((tmpdir&&tmpdir.getChild(EachDirName))||!EachDirName){
-                        tmpdir=tmpdir.getChild(EachDirName)
-                    }else{
-                        execCommand(cmd,`bash: cd: ${path.join("/")?`/${path.join("/")}`:"/"}: No such file or directory`)
-                        return existsdir=false;
-                    }
-                })
-                existsdir&&path&&setWorkDir(path.join("/")?`/${path.join("/")}`:"/")
-                break;               
+                let path=getAbsolutePath(cmd.split(" ")[1])
+                let list=getListSegments(path)
+                // list=list?list.children[path[path.length-1]].constructor.name==="Dir":false
+                list&&list.constructor.name==="Dir"?
+                    setWorkDir(path.join("/")?`/${path.join("/")}`:"/")
+                    :
+                    list&&list.constructor.name!=="Dir"?
+                    execCommand(cmd,`bash: cd: ${`/${path.join("/")}`}: Not a directory`)
+                    :
+                    execCommand(cmd,`bash: cd: ${path.join("/")?`/${path.join("/")}`:"/"}: No such file or directory`)
+                return;               
             }
+
+            case 'll':
+            case 'ls':{
+                let path=getAbsolutePath(cmd.split(" ")[1]?cmd.split(" ")[1]:"./")
+                let list=getListSegments(path)
+                let CommandOutput=list?
+                    list.key.map(x=>`<span class="terminal-output-ls ${list.children[x].constructor.name}">${x}</span>`).join("")
+                    :
+                    `bash: ls: cannot access '${path.join("/")?`/${path.join("/")}`:"/"}': No such file or directory`
+                execCommand(cmd,CommandOutput)
+                break;
+            }
+          
+            // case 'rm':{
+            //     let path=getAbsolutePath(cmd.split(" ")[1]?cmd.split(" ")[1]:"./")
+            //     let list=getListSegments(path)
+
+            //     console.log(path,list,FileSystem&&!list)
+            //     break
+            // }
 
             case 'exit':{
                 Update({ closing: true })
                 navigate("/")
-                break;
+                return;
             }
 
             default:{
                 execCommand(cmd,cmd&&"-bash: "+cmd+": command not found")
+                return cmd&&"-bash: "+cmd+": command not found";
             }
         }
 
     }
-    //https://jasonpark.me/#/
     // return(<ComingSoon Update={Update} app={app}/>)
     return(
         <Window 
@@ -169,10 +206,10 @@ function Terminal({app, Update, FileSystem}){
                     Object.entries(terminalCommandData).map(([key]) => (
                             key>terminalCommandData[0].value&&(
                                 terminalCommandData[key].type==="input"?
-                                <div key={key}>{user}@W0R!D:{terminalCommandData[key].workDir}$ {terminalCommandData[key].value}</div>
+                                <div key={key} dangerouslySetInnerHTML={{__html:`${user}@W0R!D:${terminalCommandData[key].workDir}$ ${terminalCommandData[key].value}`}}></div>
                                 :
                                 terminalCommandData[key].type==="output"?
-                                <div key={key}>{terminalCommandData[key].value}</div>
+                                <div key={key} dangerouslySetInnerHTML={{__html:terminalCommandData[key].value}}></div>
                                 :
                                 none
                             )
