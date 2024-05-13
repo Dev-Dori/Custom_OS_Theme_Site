@@ -2,9 +2,9 @@ import { none } from 'images';
 
 let count = 1;
 
-
 function App(name, WindowComponent,PinTaskbar, icon){ 
     const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
+    this.type = "App"
     this.name = name;
     this.WindowComponent = WindowComponent;
     this.zIndex = 1;

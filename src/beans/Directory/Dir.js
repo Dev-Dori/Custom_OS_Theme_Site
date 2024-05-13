@@ -1,6 +1,7 @@
 import { RootDir } from 'beans';
 
 class Dir extends RootDir{
+    type="Dir"
     constructor(children) {
         super(null);
         this.key = Object.keys(children)
