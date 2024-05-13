@@ -34,7 +34,6 @@ function Terminal({app, Update, FileSystem}){
 
     const handleKeyDownEvent = (event) => {
         if(!app.focused) return;
-        // console.log(event)
         if(event.ctrlKey&&event.key.length===1&&event.key.toUpperCase()==="C"){
             execCommand(`^${event.key.toUpperCase()}`)
         }else if(event.key&&event.key.length===1){
@@ -147,13 +146,13 @@ function Terminal({app, Update, FileSystem}){
 
             case 'cd':{
                 execCommand(cmd,"")
-                let path=getAbsolutePath(cmd.split(" ")[1])
+                let path=getAbsolutePath(cmd.split(" ")[1]?cmd.split(" ")[1]:"./")
                 let list=getListSegments(path)
-                // list=list?list.children[path[path.length-1]].constructor.name==="Dir":false
-                list&&list.constructor.name==="Dir"?
+                // list=list?list.children[path[path.length-1]].type==="Dir":false
+                list&&list.type==="Dir"?
                     setWorkDir(path.join("/")?`/${path.join("/")}`:"/")
                     :
-                    list&&list.constructor.name!=="Dir"?
+                    list&&list.type!=="Dir"?
                     execCommand(cmd,`bash: cd: ${`/${path.join("/")}`}: Not a directory`)
                     :
                     execCommand(cmd,`bash: cd: ${path.join("/")?`/${path.join("/")}`:"/"}: No such file or directory`)
@@ -162,10 +161,24 @@ function Terminal({app, Update, FileSystem}){
 
             case 'll':
             case 'ls':{
-                let path=getAbsolutePath(cmd.split(" ")[1]?cmd.split(" ")[1]:"./")
+                let option=cmd.split(" ")[1]&&cmd.split(" ")[1][0]==="-"?cmd.split(" ")[1]:false
+                console.log(option)
+                let path=getAbsolutePath(
+                    cmd.split(" ")[1]&&option?
+                        cmd.split(" ")[2]!==undefined?
+                            cmd.split(" ")[2]
+                            :
+                            "./"
+                        :
+                        cmd.split(" ")[1]?
+                            cmd.split(" ")[1]    
+                            :
+                            "./"
+                )
+
                 let list=getListSegments(path)
                 let CommandOutput=list?
-                    list.key.map(x=>`<span class="terminal-output-ls ${list.children[x].constructor.name}">${x}</span>`).join("")
+                    list.key.map(x=>`<span class="terminal-output-ls ${list.children[x].type}">${x}</span>`).join("")
                     :
                     `bash: ls: cannot access '${path.join("/")?`/${path.join("/")}`:"/"}': No such file or directory`
                 execCommand(cmd,CommandOutput)
@@ -211,7 +224,7 @@ function Terminal({app, Update, FileSystem}){
                                 terminalCommandData[key].type==="output"?
                                 <div key={key} dangerouslySetInnerHTML={{__html:terminalCommandData[key].value}}></div>
                                 :
-                                none
+                                false
                             )
                         )
                     )
