@@ -1,17 +1,19 @@
 import { Window } from 'components';
-import { useState, useEffect, useRef } from 'react';
+import { FileSystemContext } from 'contexts'
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style.scss';
 
-function Terminal({app, Update, FileSystem}){
+function Terminal({app, Update}){
     const navigate = useNavigate();
     let WindowSize = {WindowHeight:450, WindowWidth:700};
     const scrollRef = useRef();
+    const [FileSystem,SetFileSystem]  = useContext(FileSystemContext);
     const [cursorPosition, setCursorPosition] = useState(0)
     const [commandIndex,setCommandIndex] = useState([0,""]);
     const [command, setCommand] = useState("");
     const [user,setUser] = useState("DevDori")
-    const [workDir, setWorkDir] = useState("/users/DevDori")
+    const [workDir, setWorkDir] = useState("/users/DevDori/apps")
     const [terminalCommandData, setTerminalCommandData] = useState([
         { type: "clear", value:0},
         { type: "output", value: "Welcome to the DevDori World !👋" },
@@ -208,9 +210,9 @@ function Terminal({app, Update, FileSystem}){
             // case 'rm':{
             //     let path=getAbsolutePath(cmd.split(" ")[1]?cmd.split(" ")[1]:"./")
             //     let list=getListSegments(path)
-
-            //     console.log(path,list,FileSystem&&!list)
+            //     list.children["System"].remove()
             //     break
+            //     기능구현중
             // }
 
             case 'exit':{

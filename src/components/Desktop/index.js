@@ -9,7 +9,7 @@ import { Wallpapers as background } from 'images';
 import { Link } from 'react-router-dom';
 
 function Desktop(){
-    const [FileSystem,ReloadDir]  = useContext(FileSystemContext);
+    const [FileSystem]  = useContext(FileSystemContext);
     const GetDesktop = FileSystem.GetDesktopDir();
     const [apps,GetApp] = useState(FileSystem.GetApps());
     console.log(GetDesktop)
@@ -26,14 +26,12 @@ function Desktop(){
             if (currentUrl.split("/")[1]===""&&apps[key].focused&&!apps[key].closing){
                 apps[key].minimized = true;
                 apps[key].focused = false;
-                change=true
             } else apps[key].minimized = false;
             // 창이 닫힌 상태 -> 새로 열기
             if (apps[key].closing) {
                 apps[key].closing = false;
                 apps[key].opened = false;
                 apps[key].focused = false;
-                change=true;
             }
             // 창이 열려있는 상태 -> 다시 창을 클릭 한 경우
             if (focused && (!apps[key].opened||!apps[key].focused)){
@@ -43,7 +41,6 @@ function Desktop(){
             }
             apps[key].focused = focused; // 무한반복을 방지하기 위함
         }
-        if(change) ReloadDir();
     }
     
     useEffect(() => {refresh()});
@@ -61,7 +58,6 @@ function Desktop(){
             <div className='app-container'>
                 {GetDesktop.key.map(key=>{
                     if(!GetDesktop.children[key].href){
-                        console.log(key, apps,GetDesktop.children[key].name)
                         return(
                         <Link to={GetDesktop.children[key].name} className='shortcut' id={'cortcut-'+key} key={key}>
                             <Icon iconUrl={apps[GetDesktop.children[key].name].icon}/> 
