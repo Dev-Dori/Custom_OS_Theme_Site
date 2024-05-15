@@ -1,5 +1,4 @@
 import { Window } from 'components';
-import { ComingSoon } from 'windows';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style.scss';
@@ -33,9 +32,11 @@ function Terminal({app, Update, FileSystem}){
     };
 
     const handleKeyDownEvent = (event) => {
+        console.log()
         if(!app.focused) return;
         if(event.ctrlKey&&event.key.length===1&&event.key.toUpperCase()==="C"){
-            execCommand(`^${event.key.toUpperCase()}`)
+            execCommand(`${command}^${event.key.toUpperCase()}`)
+            setCommand("")
         }else if(event.key&&event.key.length===1){
             setCommand(command.substring(0,cursorPosition)+event.key+command.substring(cursorPosition))
             setCursorPosition(cursorPosition+1)
@@ -49,6 +50,21 @@ function Terminal({app, Update, FileSystem}){
             setCommand(command.substring(0,cursorPosition-1)+command.substring(cursorPosition))
             setCommandIndex([commandIndex,command.substring(0,cursorPosition-1)+command.substring(cursorPosition)])
             setCursorPosition(cursorPosition-1>=0?cursorPosition-1:cursorPosition)
+        }else if(event.key==="Tab"){
+            event.preventDefault();
+            if(command==="") return;
+            let cmd=command.split(" ")
+            let path=cmd.at(-1).indexOf("/")!==-1?cmd.at(-1).slice(0,cmd.at(-1).lastIndexOf("/")+1):"./"
+            let ChangePath=cmd.pop().split("/")
+            let list=Object.entries(getListSegments(getAbsolutePath(path)).children).filter(x=>x[0].startsWith(ChangePath.at(-1))||ChangePath.at(-1)==="")
+            list.length>1&&execCommand(command,list.map(x=>`<span class="terminal-output-ls ${x[1].type}">${x[0]}</span>`).join(""), true)
+            if(list.length===1){
+                list = list[0]
+                ChangePath.pop() 
+                setCommand(cmd.concat(`${path.startsWith("./")?path.replace("./",""):path}${list[0]}${list[1].type==="Dir"?"/":""}`).join(" "))
+                setCursorPosition(cmd.concat(`${path.startsWith("./")?path.replace("./",""):path}${list[0]}${list[1].type==="Dir"?"/":""}`).join(" ").length)
+            }
+
         }else if(event.key==="ArrowLeft"||event.key==="ArrowRight"){
             event.key==="ArrowLeft"?
             setCursorPosition(cursorPosition-1>=0?cursorPosition-1:cursorPosition)
@@ -67,12 +83,12 @@ function Terminal({app, Update, FileSystem}){
 
     const getCommandHistory=()=>{
         return terminalCommandData.filter((tmpCmdData)=>{
-            return tmpCmdData.type==="input"&&tmpCmdData.value&&tmpCmdData.value[0]!=="^"
+            return tmpCmdData.type==="input"&&!tmpCmdData.hidden&&tmpCmdData.value&&tmpCmdData.value[0]!=="^"
         }).map(tmpCmdData=>tmpCmdData.value)
     }
 
     const getAbsolutePath=(path)=>{
-        if(!path) return;
+        if(!path) path=workDir;
         if(path==="~") path=`/users/${user}`
         else if(path.substr(0,2)==="~/") path=`/users/${user}`+path.replace("~","")
         else if(path.substr(0,2)==="./") path=`${workDir}/${path.replaceAll("./","")}`
@@ -97,8 +113,8 @@ function Terminal({app, Update, FileSystem}){
         return tmpdir
     }
     
-    const execCommand = (cmd, output) => {
-        let cmdData=(cmd!==undefined)?[...terminalCommandData,{type:"input", value:cmd, workDir:workDir.replace(`/users/${user}`||`/users/${user}}/`,"~")}]:terminalCommandData
+    const execCommand = (cmd, output, hidden=false) => {
+        let cmdData=(cmd!==undefined)?[...terminalCommandData,{type:"input", value:cmd, hidden:hidden,workDir:workDir.replace(`/users/${user}`||`/users/${user}}/`,"~")}]:terminalCommandData
         if(output!==undefined) cmdData.push({type:"output", value:output})
         setTerminalCommandData(cmdData)
     }
@@ -177,8 +193,12 @@ function Terminal({app, Update, FileSystem}){
                 )
 
                 let list=getListSegments(path)
+                console.log(list)
                 let CommandOutput=list?
-                    list.key.map(x=>`<span class="terminal-output-ls ${list.children[x].type}">${x}</span>`).join("")
+                    list.key?
+                        list.key.map(x=>`<span class="terminal-output-ls ${list.children[x].type}">${x}</span>`).join("")
+                        :
+                        `<span class="terminal-output-ls ${list.type}">${list.name}</span>`
                     :
                     `bash: ls: cannot access '${path.join("/")?`/${path.join("/")}`:"/"}': No such file or directory`
                 execCommand(cmd,CommandOutput)
@@ -206,7 +226,7 @@ function Terminal({app, Update, FileSystem}){
         }
 
     }
-    // return(<ComingSoon Update={Update} app={app}/>)
+
     return(
         <Window 
         Update = {Update}
