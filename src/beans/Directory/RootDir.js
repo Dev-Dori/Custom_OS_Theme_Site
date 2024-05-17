@@ -59,7 +59,8 @@ class RootDir{
                         Blog: browser, 
                         Github: new LinkFile('https://github.com/Dev-Dori',IconMap.github), // Github Icon
                     })
-                })
+                }),
+
             })
         })
 

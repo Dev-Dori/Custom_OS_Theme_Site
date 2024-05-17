@@ -1,4 +1,5 @@
 import { RootDir } from 'beans';
+import { get } from 'jquery';
 
 class Dir extends RootDir{
     type="Dir"
