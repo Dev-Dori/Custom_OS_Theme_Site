@@ -8,12 +8,12 @@ function Terminal({app, Update}){
     const navigate = useNavigate();
     let WindowSize = {WindowHeight:450, WindowWidth:700};
     const scrollRef = useRef();
-    const [FileSystem,SetFileSystem]  = useContext(FileSystemContext);
+    const [FileSystem,setReload]  = useContext(FileSystemContext);
     const [cursorPosition, setCursorPosition] = useState(0)
     const [commandIndex,setCommandIndex] = useState([0,""]);
     const [command, setCommand] = useState("");
     const [user,setUser] = useState("DevDori")
-    const [workDir, setWorkDir] = useState("/users/DevDori/apps")
+    const [workDir, setWorkDir] = useState("/users/DevDori/")
     const [terminalCommandData, setTerminalCommandData] = useState([
         { type: "clear", value:0},
         { type: "output", value: "Welcome to the DevDori World !👋" },
@@ -34,7 +34,6 @@ function Terminal({app, Update}){
     };
 
     const handleKeyDownEvent = (event) => {
-        console.log()
         if(!app.focused) return;
         if(event.ctrlKey&&event.key.length===1&&event.key.toUpperCase()==="C"){
             execCommand(`${command}^${event.key.toUpperCase()}`)
@@ -75,7 +74,6 @@ function Terminal({app, Update}){
         }else if(event.key==="ArrowUp" || event.key==="ArrowDown"){
             let commandhistory=getCommandHistory().concat([commandIndex[1]])
             let cmdIndex=event.key==="ArrowUp"?commandIndex[0]-1>=0?commandIndex[0]-1:0:commandIndex[0]+1<commandhistory.length?commandIndex[0]+1:commandIndex[0]
-            console.log(commandhistory,commandhistory[cmdIndex],cmdIndex)
             setCommand(commandhistory[cmdIndex].replaceAll("&lt;","<").replaceAll("&gt;",">"))
             setCursorPosition(commandhistory[cmdIndex].length)
             setCommandIndex([cmdIndex,commandIndex[1]])
@@ -151,7 +149,6 @@ function Terminal({app, Update}){
             }
 
             case 'clear':{
-                console.log(terminalCommandData.length)
                 terminalCommandData[0]={type: "clear", value:terminalCommandData.length}
                 execCommand(cmd)
                 return;
@@ -180,7 +177,6 @@ function Terminal({app, Update}){
             case 'll':
             case 'ls':{
                 let option=cmd.split(" ")[1]&&cmd.split(" ")[1][0]==="-"?cmd.split(" ")[1]:false
-                console.log(option)
                 let path=getAbsolutePath(
                     cmd.split(" ")[1]&&option?
                         cmd.split(" ")[2]!==undefined?
@@ -195,7 +191,6 @@ function Terminal({app, Update}){
                 )
 
                 let list=getListSegments(path)
-                console.log(list)
                 let CommandOutput=list?
                     list.key?
                         list.key.map(x=>`<span class="terminal-output-ls ${list.children[x].type}">${x}</span>`).join("")
@@ -207,13 +202,20 @@ function Terminal({app, Update}){
                 break;
             }
           
-            // case 'rm':{
-            //     let path=getAbsolutePath(cmd.split(" ")[1]?cmd.split(" ")[1]:"./")
-            //     let list=getListSegments(path)
-            //     list.children["System"].remove()
-            //     break
-            //     기능구현중
-            // }
+            case 'rm':{
+                execCommand(cmd,"")
+                if(!cmd.split(" ")[1]) return;
+                const path=getAbsolutePath(cmd.split(" ")[1]?cmd.split(" ")[1]:"./")
+                const RmTarget = getListSegments(path)
+                let CommandOutput = ""
+                console.log(RmTarget,path,getListSegments(path))
+                if(RmTarget){
+                    getListSegments(path).remove()
+                }else CommandOutput=`bash: rm: cannot remove '${cmd.split(" ")[1]?cmd.split(" ")[1]:"./"}': No such file or directory`
+                execCommand(cmd,CommandOutput)
+                setReload()
+                break
+            }
 
             case 'exit':{
                 Update({ closing: true })

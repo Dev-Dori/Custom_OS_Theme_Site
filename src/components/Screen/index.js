@@ -8,12 +8,10 @@ import { useNavigate,useLocation } from 'react-router-dom'
 import './style.scss'
 
 function Screen(){
-    const [FileSystem, SetFileSystem] = useState(RootDir.instance)
+    const [reload, setReload] = useState(0)
+    const FileSystem = RootDir.instance
     const navigate = useNavigate();
-
-
-    const [apps,GetApp] = useState(FileSystem.GetApps());
-
+    const apps = FileSystem.GetApps();
     const location = useLocation();
     let currentUrl = location.pathname;
 
@@ -24,6 +22,7 @@ function Screen(){
         window.addEventListener("keydown", Escape)
         return () => window.removeEventListener("keydown", Escape)
     },[location])
+
 
     for(let key in apps){
         // URL에서 호출된 정보를 기준으로 포커스 여부 판단 
@@ -50,7 +49,7 @@ function Screen(){
 
     return (
         <div className='Screen'>
-            <FileSystemContext.Provider value={[FileSystem, SetFileSystem]}>
+            <FileSystemContext.Provider value={[FileSystem, ()=>{setReload(reload+1)}]}>
                 <Desktop />
                 <Taskbar />
             </FileSystemContext.Provider>

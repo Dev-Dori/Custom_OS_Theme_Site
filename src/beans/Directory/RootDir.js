@@ -1,6 +1,6 @@
 import { Dir } from 'beans';
-import { App, LinkFile } from 'beans'; //SymlinkFile
-import { Terminal, FileExplorer, System, Github, Browser, Project } from 'windows';
+import { App, LinkFile, SymbolicLink } from 'beans'; //SymlinkFile
+import { Terminal, FileExplorer, System, Browser, Project } from 'windows';
 import * as IconMap from 'images';
 
 class RootDir{    
@@ -32,43 +32,39 @@ class RootDir{
         if (this.rootDir){
             return this.rootDir;
         }
+        
+        const Apps = {
+                        system:new App(System,false,IconMap.system,{use: true, name: "System"}),
+                        termianl:new App(Terminal,true,IconMap.termianl, {use: true, name: "Terminal"}),
+                        fileExplorer:new App(FileExplorer,true,IconMap.fileExplorer, {use: true, name: "Files"}),
+                        browser:new App(Browser,true,IconMap.browser, {use: true, name: "Blog"}),
+                        projects:new App(Project,true,IconMap.project, {use: false})
+                    }
 
-        const termianl = new App("Terminal",Terminal,true,IconMap.termianl);
-        const fileExplorer = new App("FileExplorer",FileExplorer,true,IconMap.fileExplorer);
-        const system = new App("System",System,false,IconMap.system);
-        const browser = new App("Browser",Browser,true,IconMap.browser);
-        const projects = new App("Project",Project,true,IconMap.project);
-
+        const Desktop = {
+                        // APP에 심볼링크 사용으로 등록한 객체는 자동으로 로드됨.
+                        Github: new LinkFile('https://github.com/Dev-Dori',IconMap.github), // Github Icon
+                    }
 
         this.rootDir = new Dir({
             users: new Dir({
                 DevDori: new Dir({
-                    apps: new Dir({
-                        System : system,
-                        Browser: browser,
-                        Terminal : termianl, // new App('Terminal')
-                        FileExplorer : fileExplorer,
-                        Project : projects,
-                    }),
-                    Desktop: new Dir({
-                        System: system,
-                        // System: new LinkFile('https://devdori.notion.site/Profile-b65bbb4fbb41417ab3c616dd84c43a28',system.Icon), // Desktop Icon
-                        Files: fileExplorer,
-                        // Projects: projects, 
-                        Terminal: termianl,
-                        Blog: browser, 
-                        Github: new LinkFile('https://github.com/Dev-Dori',IconMap.github), // Github Icon
-                    })
+                    apps: new Dir(Apps),
+                    Desktop: new Dir(Object.assign({}, ...Object.keys(Apps).map(app=>{
+                                if(Apps[app].SymbolicLink.use){
+                                    return {[Apps[app].SymbolicLink.name]:new SymbolicLink(Apps[app],app)}
+                                }
+                                }).filter(element => element)
+                            , Desktop))
                 }),
 
             })
         })
 
-
-        // console.log(test3, this.rootDir)
-
         return this.rootDir;
     }
+
+    
 
 }
 

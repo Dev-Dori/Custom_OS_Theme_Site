@@ -71,8 +71,12 @@
         font-weight: 700;
     }
 
-    .App {
+    .App,.SymbolicLink {
         color: #9dd55e;
+    }
+
+    .LinkFile{
+        color: #ac7becf6;
     }
 
 }

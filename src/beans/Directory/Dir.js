@@ -1,10 +1,9 @@
 import { RootDir } from 'beans';
-import { get } from 'jquery';
 
 class Dir extends RootDir{
-    type="Dir"
     constructor(children) {
         super(null);
+        this.type="Dir"
         this.key = Object.keys(children)
         this.children = Object.assign({}, ...Object.keys(children).map(key => {
             const child = children[key];
@@ -20,6 +19,15 @@ class Dir extends RootDir{
         }
         return dir;
     };
+
+    remove() {
+        console.log("RM : ",this)
+        const Dirkey = Object.keys(this.parent.parent.children).find(key => this.parent.parent.children[key]===this.parent)
+        const Appkey = Object.keys(this.parent.children).find(key => this.parent.children[key]===this)
+        this.parent.parent.children[Dirkey] = this.parent
+        delete this.parent.children[Appkey]
+        this.parent.key.splice(this.parent.key.indexOf(Appkey),1)
+    }
 }
 
 export default Dir;
