@@ -1,6 +1,7 @@
-import { RootDir } from 'beans';
+// import { RootDir } from 'beans';
+import { ExtensionFunction } from 'beans';
 
-class Dir extends RootDir{
+class Dir extends ExtensionFunction{
     constructor(children) {
         super(null);
         this.type="Dir"
@@ -17,17 +18,8 @@ class Dir extends RootDir{
             if (!(dir instanceof Dir)) return undefined;
             dir = dir.children[dirKey];
         }
-        return dir;
+        return dir?dir:undefined;
     };
-
-    remove() {
-        console.log("RM : ",this)
-        const Dirkey = Object.keys(this.parent.parent.children).find(key => this.parent.parent.children[key]===this.parent)
-        const Appkey = Object.keys(this.parent.children).find(key => this.parent.children[key]===this)
-        this.parent.parent.children[Dirkey] = this.parent
-        delete this.parent.children[Appkey]
-        this.parent.key.splice(this.parent.key.indexOf(Appkey),1)
-    }
 }
 
 export default Dir;

@@ -13,7 +13,6 @@ function Screen(){
     const navigate = useNavigate();
     const apps = FileSystem.GetApps();
     const location = useLocation();
-    let currentUrl = location.pathname;
 
     console.log("=== Screen 렌더링 ===",location.pathname)
 
@@ -26,8 +25,8 @@ function Screen(){
 
     for(let key in apps){
         // URL에서 호출된 정보를 기준으로 포커스 여부 판단 
-        const focused = (currentUrl.split("/")[1] === key);
-        if (currentUrl.split("/")[1]===""&&apps[key].focused&&!apps[key].closing){
+        const focused = (location.pathname.split("/")[1] === key);
+        if (location.pathname.split("/")[1]===""&&apps[key].focused&&!apps[key].closing){
             apps[key].minimized = true;
             apps[key].focused = false;
         } else apps[key].minimized = false;
@@ -45,15 +44,13 @@ function Screen(){
         apps[key].focused = focused; // 무한반복을 방지하기 위함
     }
 
-
-
     return (
-        <div className='Screen'>
-            <FileSystemContext.Provider value={[FileSystem, ()=>{setReload(reload+1)}]}>
+        <FileSystemContext.Provider value={[FileSystem, ()=>{setReload(reload+1)}]}>
+            {FileSystem.key.length>0&&(<div className='Screen'>
                 <Desktop />
                 <Taskbar />
-            </FileSystemContext.Provider>
-        </div>
+            </div>)}
+        </FileSystemContext.Provider>
       );
 }
 

@@ -14,6 +14,7 @@ class App extends ExtensionFunction{
         this.maximized = false;
         this.WindowHeight = 750;
         this.WindowWidth = 450;
+
         this.PinTaskbar = PinTaskbar||false;
         this.icon = icon? icon : none;
         this.SymbolicLink = SymbolicLink;

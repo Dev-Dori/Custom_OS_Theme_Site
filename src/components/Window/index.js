@@ -17,10 +17,11 @@ function Window({Contents, Update, app,WindowSize}){
     const [moving, setMoving] = useState(false);
     const navigate = useNavigate();
 
-    let [[left, top, width, height], setCoords] = useState([getRandom((window.innerWidth-WindowWidth)/6, (window.innerWidth-WindowWidth)/1.5), 
-                                                              getRandom(30,(window.innerHeight-WindowHeight)-70), 
-                                                              WindowWidth, 
-                                                              WindowHeight]);
+    let [[left, top, width, height], setCoords] = useState([app.positionX?app.positionX:getRandom((window.innerWidth-WindowWidth)/6, (window.innerWidth-WindowWidth)/1.5), 
+                                                            app.positionY?app.positionY:getRandom(30,(window.innerHeight-WindowHeight)-70), 
+                                                            WindowWidth, 
+                                                            WindowHeight]);
+
     useEffect(() => {
         window.addEventListener("resize", setWindowResizeing);
         if (focused && minimized) setMinimized(false);
@@ -87,7 +88,7 @@ function Window({Contents, Update, app,WindowSize}){
                 </div>
                 
                 <div className="button-container" style={{filter:!focused&&"grayscale(100%)"}}>
-                    <Link className="button button-close" to="/" onClick={() => Update({ closing: true })}>
+                    <Link className="button button-close" to="/" onClick={() => {app.positionX=left;app.positionY=top;Update({ closing: true })}}>
                         <img className="normal" alt='close' src={IconMap.Close}/>
                         <img className="hover"  alt='close' src={IconMap.HoverClose}/>
                     </Link>

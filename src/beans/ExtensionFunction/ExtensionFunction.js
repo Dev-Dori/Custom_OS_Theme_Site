@@ -1,9 +1,32 @@
 
 class ExtensionFunction{
+    GetUserDir(user="DevDori"){
+        return this.getChild('users',user);
+    }
+
+    GetDesktopDir(){
+        const UserDir = this.GetUserDir();
+        return UserDir?UserDir.getChild('Desktop'):undefined;
+    }
+
+    GetAppsDir(){
+        const UserDir = this.GetUserDir();
+        return UserDir?UserDir.getChild('apps'):undefined;
+    }
+
+    GetApps(){
+        const AppsDir = this.GetAppsDir();
+        return AppsDir?AppsDir.children:undefined;
+    }
+
+    GetDesktop(){
+        const DesktopDir = this.GetDesktopDir();
+        return DesktopDir?DesktopDir.children:undefined;
+    }
+
     remove() {
-        const Dirkey = Object.keys(this.parent.parent.children).find(key => this.parent.parent.children[key]===this.parent)
+        if(this.parent===undefined) return(this.key=[],this.children={})
         const Appkey = Object.keys(this.parent.children).find(key => this.parent.children[key]===this)
-        this.parent.parent.children[Dirkey] = this.parent
         delete this.parent.children[Appkey]
         this.parent.key.splice(this.parent.key.indexOf(Appkey),1)
     }

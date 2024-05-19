@@ -1,7 +1,6 @@
 import React from 'react'
 import { FileSystemContext } from 'contexts'
-import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useContext, useState } from 'react';
 import { Icon } from 'components';
 import './style.scss'
 // import background from 'images/Wallpapers/background2.webp';
@@ -11,7 +10,8 @@ import { Link } from 'react-router-dom';
 function Desktop(){
     const [FileSystem]  = useContext(FileSystemContext);
     const GetDesktop = FileSystem.GetDesktopDir();
-    const [apps,GetApp] = useState(FileSystem.GetApps());
+    const apps = FileSystem.GetApps()
+    
     return (
         <div className='Desktop'>
             {/* <div className="Wallpaper" style={{backgroundImage: `linear-gradient(to top, rgba(19, 21, 25, 0.5), rgba(19, 21, 25, 0.5)),url(${background})`}}></div> */}
@@ -36,13 +36,11 @@ function Desktop(){
                 })}
             </div>
             <div className='window-container'>
-                {console.log(apps)}
-                {Object.keys(apps).filter(key=>apps[key].opened).map(key=>{
+                {apps&&Object.keys(apps).filter(key=>apps[key].opened).map(key=>{
                         let application = Object.assign(apps[key],{"key":key});
-                        return(<application.WindowComponent key={application.name} app={application}
+                        return(<application.WindowComponent key={`App-${key}`} app={application}
                             Update={patch =>{
                                 Object.assign(application, patch);
-                                GetApp(apps)
                             ;}}
                         />)
                     })

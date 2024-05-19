@@ -16,7 +16,7 @@ function Taskbar(){
         <div className="Taskbar">
             <div></div>
             <div className='shortcut-container'>
-                {Object.keys(apps).filter(key=>apps[key].opened || apps[key].PinTaskbar).map(key=>{
+                {apps&&Object.keys(apps).filter(key=>apps[key].opened || apps[key].PinTaskbar).map(key=>{
                     return (
                         <Link key={'shortcut-'+key} className={classes('shortcut','pinned',apps[key].opened&&'active')}
                             to={key===currentUrl.split("/")[1]?"/":key}>

@@ -2,6 +2,7 @@ import { Window } from 'components';
 import { FileSystemContext } from 'contexts'
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { App, Dir, SystemDir } from 'beans';
 import './style.scss';
 
 function Terminal({app, Update}){
@@ -13,7 +14,7 @@ function Terminal({app, Update}){
     const [commandIndex,setCommandIndex] = useState([0,""]);
     const [command, setCommand] = useState("");
     const [user,setUser] = useState("DevDori")
-    const [workDir, setWorkDir] = useState("/users/DevDori/")
+    const [workDir, setWorkDir] = useState("/users/DevDori/Desktop")
     const [terminalCommandData, setTerminalCommandData] = useState([
         { type: "clear", value:0},
         { type: "output", value: "Welcome to the DevDori World !👋" },
@@ -36,13 +37,17 @@ function Terminal({app, Update}){
     const handleKeyDownEvent = (event) => {
         if(!app.focused) return;
         if(event.ctrlKey&&event.key.length===1&&event.key.toUpperCase()==="C"){
-            execCommand(`${command}^${event.key.toUpperCase()}`)
+            setTerminalCommandData([
+                ...terminalCommandData,
+                {type:"input", value:`${command}^${event.key.toUpperCase()}`, workDir:workDir.replace(`/users/${user}`||`/users/${user}}/`,"~")}
+            ])
             setCommand("")
         }else if(event.key&&event.key.length===1){
             setCommand(command.substring(0,cursorPosition)+event.key+command.substring(cursorPosition))
             setCursorPosition(cursorPosition+1)
             setCommandIndex([getCommandHistory().length,command.substring(0,cursorPosition)+event.key+command.substring(cursorPosition)])
         }else if(event.key==="Enter") {
+            setTerminalCommandData([...terminalCommandData,{type:"input", value:command, hidden:false,workDir:workDir.replace(`/users/${user}`||`/users/${user}}/`,"~")}])
             inputCommand(command)
             setCursorPosition(0)
             setCommandIndex([command.length>0?getCommandHistory().length+1:getCommandHistory().length,""])
@@ -58,7 +63,13 @@ function Terminal({app, Update}){
             let path=cmd.at(-1).indexOf("/")!==-1?cmd.at(-1).slice(0,cmd.at(-1).lastIndexOf("/")+1):"./"
             let ChangePath=cmd.pop().split("/")
             let list=Object.entries(getListSegments(getAbsolutePath(path)).children).filter(x=>x[0].startsWith(ChangePath.at(-1))||ChangePath.at(-1)==="")
-            list.length>1&&execCommand(command,list.map(x=>`<span class="terminal-output-ls ${x[1].type}">${x[0]}</span>`).join(""), true)
+
+            list.length>1&&setTerminalCommandData([
+                ...terminalCommandData,
+                {type:"input", value:command, workDir:workDir.replace(`/users/${user}`||`/users/${user}}/`,"~")},
+                {type:"output", value:list.map(x=>`<span class="terminal-output-ls ${x[1].type}">${x[0]}</span>`).join("")}
+            ])
+
             if(list.length===1){
                 list = list[0]
                 ChangePath.pop() 
@@ -113,15 +124,24 @@ function Terminal({app, Update}){
         return tmpdir
     }
     
-    const execCommand = (cmd, output, hidden=false) => {
-        let cmdData=(cmd!==undefined)?[...terminalCommandData,{type:"input", value:cmd, hidden:hidden,workDir:workDir.replace(`/users/${user}`||`/users/${user}}/`,"~")}]:terminalCommandData
-        if(output!==undefined) cmdData.push({type:"output", value:output})
-        setTerminalCommandData(cmdData)
+    const print = (output) => {
+        setTerminalCommandData([
+            ...terminalCommandData,
+            {type:"input", value:command, hidden:false, workDir:workDir.replace(`/users/${user}`||`/users/${user}}/`,"~")},
+            {type:"output", value:output}
+        ])
+        return output
     }
 
     const inputCommand = (cmd) => {
         cmd=cmd.replaceAll("<","&lt;").replaceAll(">","&gt;")
-        switch(cmd.split(" ")[0]){
+        const args=cmd.split(/\s+/).splice(1)
+        const pathArgs = args.find(arg => !arg.startsWith('-'));
+        const absolutePath = getAbsolutePath(pathArgs?pathArgs:"./")
+        const optionArg = args.find(arg => arg.startsWith('-'));
+        const option = optionArg ? optionArg.substring(1).split('') : [];
+        
+        switch(cmd.split(/\s+/)[0]){
             case 'help':{
                 let CommandOutput=[
                                 "help   \t\tshow all the possible commands",
@@ -133,88 +153,65 @@ function Terminal({app, Update}){
                                 "clear  \t\tclear the terminal screen",
                                 ].join("\n")
 
-                execCommand(cmd,CommandOutput)
-                return CommandOutput;
+                return print(CommandOutput);
             }
 
-            case 'whoami':{
-                execCommand(cmd, user)
-                return user;
-            }
+            case 'whoami':
+                return print(user)
+            
+            case 'history':
+                return print(getCommandHistory().concat("history").map((cmd,line)=>`${line+1}\t${cmd}`).join("\n"))
 
-            case 'history': {
-                let CommandOutput=getCommandHistory().concat("history").map((cmd,line)=>`${line+1}\t${cmd}`).join("\n")
-                execCommand(cmd,CommandOutput)
-                return CommandOutput;
-            }
-
-            case 'clear':{
+            case 'clear':
                 terminalCommandData[0]={type: "clear", value:terminalCommandData.length}
-                execCommand(cmd)
-                return;
-            }
+                return print("")
+            
 
-            case 'pwd': {
-                execCommand(cmd,workDir)
-                return workDir;
-            }
+            case 'pwd':return print(workDir);
 
             case 'cd':{
-                execCommand(cmd,"")
-                let path=getAbsolutePath(cmd.split(" ")[1]?cmd.split(" ")[1]:"./")
-                let list=getListSegments(path)
-                // list=list?list.children[path[path.length-1]].type==="Dir":false
-                list&&list.type==="Dir"?
-                    setWorkDir(path.join("/")?`/${path.join("/")}`:"/")
+                let list=getListSegments(absolutePath)
+                list instanceof Dir?
+                    setWorkDir(absolutePath.join("/")?`/${absolutePath.join("/")}`:"/")
                     :
-                    list&&list.type!=="Dir"?
-                    execCommand(cmd,`bash: cd: ${`/${path.join("/")}`}: Not a directory`)
-                    :
-                    execCommand(cmd,`bash: cd: ${path.join("/")?`/${path.join("/")}`:"/"}: No such file or directory`)
+                    list?
+                        print(`bash: cd: ${`/${absolutePath.join("/")}`}: Not a directory`)
+                        :
+                        print(`bash: cd: ${absolutePath.join("/")?`/${absolutePath.join("/")}`:"/"}: No such file or directory`)
                 return;               
             }
 
             case 'll':
             case 'ls':{
-                let option=cmd.split(" ")[1]&&cmd.split(" ")[1][0]==="-"?cmd.split(" ")[1]:false
-                let path=getAbsolutePath(
-                    cmd.split(" ")[1]&&option?
-                        cmd.split(" ")[2]!==undefined?
-                            cmd.split(" ")[2]
+                let list=getListSegments(absolutePath)
+                return print(
+                    list?
+                        list.key?
+                            list.key.map(x=>`<span class="terminal-output-ls ${list.children[x].type}">${x}</span>`).join("")
                             :
-                            "./"
+                            `<span class="terminal-output-ls ${list.type}">${list.name}</span>`
                         :
-                        cmd.split(" ")[1]?
-                            cmd.split(" ")[1]    
-                            :
-                            "./"
+                        `bash: ls: cannot access '${absolutePath.join("/")?`/${absolutePath.join("/")}`:"/"}': No such file or directory`
                 )
-
-                let list=getListSegments(path)
-                let CommandOutput=list?
-                    list.key?
-                        list.key.map(x=>`<span class="terminal-output-ls ${list.children[x].type}">${x}</span>`).join("")
-                        :
-                        `<span class="terminal-output-ls ${list.type}">${list.name}</span>`
-                    :
-                    `bash: ls: cannot access '${path.join("/")?`/${path.join("/")}`:"/"}': No such file or directory`
-                execCommand(cmd,CommandOutput)
-                break;
             }
           
             case 'rm':{
-                execCommand(cmd,"")
-                if(!cmd.split(" ")[1]) return;
-                const path=getAbsolutePath(cmd.split(" ")[1]?cmd.split(" ")[1]:"./")
-                const RmTarget = getListSegments(path)
-                let CommandOutput = ""
-                console.log(RmTarget,path,getListSegments(path))
-                if(RmTarget){
-                    getListSegments(path).remove()
-                }else CommandOutput=`bash: rm: cannot remove '${cmd.split(" ")[1]?cmd.split(" ")[1]:"./"}': No such file or directory`
-                execCommand(cmd,CommandOutput)
+                const rmTarget = getListSegments(absolutePath)
+                if(!pathArgs){
+                    return print(`rm: missing operand`)
+                }
+                if(!rmTarget){
+                    return print(`bash: rm: cannot remove '${cmd.split(" ")[1]?cmd.split(" ")[1]:"./"}': No such file or directory`)
+                }
+                if(rmTarget instanceof Dir && !option.includes("r")) {
+                    return print(`bash: rm: '${cmd.split(" ")[1]?cmd.split(" ")[1]:"./"}': Is a directory`)
+                }
+                if(rmTarget instanceof SystemDir && !option.includes("f")) {
+                    return print(`bash: rm: '${cmd.split(" ")[1]?cmd.split(" ")[1]:"./"}': Permission denied`)
+                }
+                rmTarget.remove()
                 setReload()
-                break
+                return;
             }
 
             case 'exit':{
@@ -224,12 +221,13 @@ function Terminal({app, Update}){
             }
 
             default:{
-                execCommand(cmd,cmd&&"-bash: "+cmd+": command not found")
-                return cmd&&"-bash: "+cmd+": command not found";
+                return print(cmd&&"-bash: "+cmd+": command not found");
             }
         }
 
     }
+    console.log(terminalCommandData)
+
 
     return(
         <Window 
