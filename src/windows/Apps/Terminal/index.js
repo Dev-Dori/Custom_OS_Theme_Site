@@ -1,5 +1,5 @@
 import { Window } from 'components';
-import { FileSystemContext } from 'contexts'
+import { FileSystemContext, DeviceClassification } from 'contexts'
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App, Dir, LinkFile, SymbolicLink, SystemDir } from 'beans';
@@ -7,6 +7,7 @@ import './style.scss';
 
 function Terminal({app, Update}){
     const navigate = useNavigate();
+    const mobile = useContext(DeviceClassification)
     let WindowSize = {WindowHeight:450, WindowWidth:700};
     const scrollRef = useRef();
     const [FileSystem,setReload]  = useContext(FileSystemContext);
@@ -23,7 +24,7 @@ function Terminal({app, Update}){
     
     useEffect(()=>{
         scrollToBottom();
-        window.addEventListener("keydown",handleKeyDownEvent)
+        !mobile && window.addEventListener("keydown",handleKeyDownEvent)
         return () => window.removeEventListener("keydown",handleKeyDownEvent);
     },[command,commandIndex,terminalCommandData,cursorPosition])
 
@@ -152,7 +153,7 @@ function Terminal({app, Update}){
                                 "cd     \t\tchange the working directory",
                                 "rm     \t\tremoves the entries for a specified file or directory",
                                 "run    \t\trunning a specific application",
-                                "mkdir  \t\tmake new directory",
+                                "mkdir  \t\tmake a new directory",
                                 "history\t\tDisplay or manipulate the history list.",
                                 "clear  \t\tclear the terminal screen",
                                 ].join("\n")
@@ -276,6 +277,14 @@ function Terminal({app, Update}){
                     {command.split('').map((char,index)=><span className={`input-char ${index===cursorPosition&&app.focused&&"cursor"} ${cursorPosition}`} key={`input-char-${index}`}>{char}</span>)}
                     {app.focused&&cursorPosition===command.length&&<span className='cursor'> </span>}
                 </div>
+                {mobile&&(<input type="text" className='mobile-terminal-input'
+                                 onKeyUp={(event)=>{
+                                            setCommand(event.key!=="Enter"?event.target.value:event.target.value="");
+                                            setCursorPosition(event.key!=="Enter"?event.target.value.length:0);
+                                        }}
+                                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" autoFocus={true}
+                            />
+                         )}
             </div>
         )}
     />);

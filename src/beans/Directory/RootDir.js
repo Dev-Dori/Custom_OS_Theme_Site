@@ -9,8 +9,8 @@ class RootDir{
            
         const Apps = {
                         system:new App(System,false,IconMap.system,{use: true, name: "System"}),
-                        termianl:new App(Terminal,true,IconMap.termianl, {use: true, name: "Terminal"}),
                         fileExplorer:new App(FileExplorer,true,IconMap.fileExplorer, {use: true, name: "Files"}),
+                        termianl:new App(Terminal,true,IconMap.termianl, {use: true, name: "Terminal"}),
                         browser:new App(Browser,true,IconMap.browser, {use: true, name: "Blog"}),
                         projects:new App(Project,true,IconMap.project, {use: false})
                     }

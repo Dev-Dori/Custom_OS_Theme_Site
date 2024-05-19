@@ -19,10 +19,14 @@
     font-family: 'Fira Mono', Consolas, Menlo, Monaco, 'Courier New', Courier, monospace;
     // opacity: 0.95;
     overflow-y: auto;
-
+    overflow-x: hidden;
     div{
         margin: 5px;
         white-space: pre-wrap;
+        width: 100%;
+        word-break: break-all;
+        display: flex;
+        flex-flow: wrap;
     }
 
     &::-webkit-scrollbar {
@@ -53,7 +57,7 @@
 
     }
 
-    .terminal-mobile-input{
+    .mobile-terminal-input{
         position: absolute;
         top: 0;
         bottom: 0;

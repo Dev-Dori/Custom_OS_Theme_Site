@@ -1,13 +1,19 @@
 // import { useState, useEffect } from 'react';
 import React from 'react'
 import { Desktop,Taskbar } from 'components';
-import { FileSystemContext } from 'contexts'
+import { DeviceClassification, FileSystemContext } from 'contexts'
 import { RootDir } from 'beans';
 import { useState, useEffect } from 'react';
 import { useNavigate,useLocation } from 'react-router-dom'
 import './style.scss'
 
+const isMobile = () => {
+    const { clientWidth } = document.body;
+    return clientWidth <= 512;
+  };
+
 function Screen(){
+    const [mobile, setMobile] = useState(isMobile());
     const [reload, setReload] = useState(0)
     const FileSystem = RootDir.instance
     const navigate = useNavigate();
@@ -15,6 +21,12 @@ function Screen(){
     const location = useLocation();
 
     console.log("=== Screen 렌더링 ===",location.pathname)
+    console.log(`MODE : ${mobile?"mobile":"PC"}`)
+    useEffect(() => {
+        const onResize = () => {setMobile(isMobile());};
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     useEffect(()=>{
         const Escape=(event)=>{ if(event.key==="Escape"&&location.pathname!=="/") navigate("/")}
@@ -45,12 +57,14 @@ function Screen(){
     }
 
     return (
-        <FileSystemContext.Provider value={[FileSystem, ()=>{setReload(reload+1)}]}>
-            {FileSystem.key.length>0&&(<div className='Screen'>
-                <Desktop />
-                <Taskbar />
-            </div>)}
-        </FileSystemContext.Provider>
+        <DeviceClassification.Provider value={mobile}>
+            <FileSystemContext.Provider value={[FileSystem, ()=>{setReload(reload+1)}]}>
+                {FileSystem.key.length>0&&(<div className='Screen'>
+                    <Desktop />
+                    <Taskbar />
+                </div>)}
+            </FileSystemContext.Provider>
+        </DeviceClassification.Provider>
       );
 }
 
