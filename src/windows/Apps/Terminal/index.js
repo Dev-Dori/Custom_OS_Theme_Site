@@ -152,6 +152,7 @@ function Terminal({app, Update}){
                                 "cd     \t\tchange the working directory",
                                 "rm     \t\tremoves the entries for a specified file or directory",
                                 "run    \t\trunning a specific application",
+                                "mkdir  \t\tmake new directory",
                                 "history\t\tDisplay or manipulate the history list.",
                                 "clear  \t\tclear the terminal screen",
                                 ].join("\n")
@@ -223,6 +224,16 @@ function Terminal({app, Update}){
                 else if(target) return(print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Is not a Application`))
                 else return(print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': No such file or directory`))
                 return ;
+            }
+
+            case 'mkdir':{
+                const parent = getListSegments(absolutePath.slice(0,-1))
+                const newDirName = absolutePath.at(-1)
+                if(parent.key.includes(newDirName)) return(print(`bash: ${cmd}: cannot create directory '${newDirName?newDirName:"./"}': File already exists`))
+                parent.key.push(newDirName)
+                parent.children[newDirName] = new Dir({})
+                parent.children[newDirName].parent = parent
+                return setReload();
             }
 
             case 'exit':{
