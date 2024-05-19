@@ -2,7 +2,7 @@ import { Window } from 'components';
 import { FileSystemContext } from 'contexts'
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { App, Dir, SystemDir } from 'beans';
+import { App, Dir, LinkFile, SymbolicLink, SystemDir } from 'beans';
 import './style.scss';
 
 function Terminal({app, Update}){
@@ -133,22 +133,25 @@ function Terminal({app, Update}){
         return output
     }
 
-    const inputCommand = (cmd) => {
-        cmd=cmd.replaceAll("<","&lt;").replaceAll(">","&gt;")
-        const args=cmd.split(/\s+/).splice(1)
+    const inputCommand = (input) => {
+        input=input.replaceAll("<","&lt;").replaceAll(">","&gt;")
+        const cmd=input.split(/\s+/)[0]
+        const args=input.split(/\s+/).splice(1)
         const pathArgs = args.find(arg => !arg.startsWith('-'));
         const absolutePath = getAbsolutePath(pathArgs?pathArgs:"./")
         const optionArg = args.find(arg => arg.startsWith('-'));
         const option = optionArg ? optionArg.substring(1).split('') : [];
         
-        switch(cmd.split(/\s+/)[0]){
+        switch(cmd){
             case 'help':{
                 let CommandOutput=[
                                 "help   \t\tshow all the possible commands",
                                 "whoami \t\tdisplay information about DevDori",
-                                "cd     \t\tchange the working directory",
-                                "ls     \t\tlist directory contents",
                                 "pwd    \t\tPrint the name of the current working directory.",
+                                "ls     \t\tlist directory contents",
+                                "cd     \t\tchange the working directory",
+                                "rm     \t\tremoves the entries for a specified file or directory",
+                                "run    \t\trunning a specific application",
                                 "history\t\tDisplay or manipulate the history list.",
                                 "clear  \t\tclear the terminal screen",
                                 ].join("\n")
@@ -166,7 +169,6 @@ function Terminal({app, Update}){
                 terminalCommandData[0]={type: "clear", value:terminalCommandData.length}
                 return print("")
             
-
             case 'pwd':return print(workDir);
 
             case 'cd':{
@@ -175,9 +177,9 @@ function Terminal({app, Update}){
                     setWorkDir(absolutePath.join("/")?`/${absolutePath.join("/")}`:"/")
                     :
                     list?
-                        print(`bash: cd: ${`/${absolutePath.join("/")}`}: Not a directory`)
+                        print(`bash: ${cmd}: ${`/${absolutePath.join("/")}`}: Not a directory`)
                         :
-                        print(`bash: cd: ${absolutePath.join("/")?`/${absolutePath.join("/")}`:"/"}: No such file or directory`)
+                        print(`bash: ${cmd}: ${absolutePath.join("/")?`/${absolutePath.join("/")}`:"/"}: No such file or directory`)
                 return;               
             }
 
@@ -191,27 +193,36 @@ function Terminal({app, Update}){
                             :
                             `<span class="terminal-output-ls ${list.type}">${list.name}</span>`
                         :
-                        `bash: ls: cannot access '${absolutePath.join("/")?`/${absolutePath.join("/")}`:"/"}': No such file or directory`
+                        `bash: ${cmd}: cannot access '${absolutePath.join("/")?`/${absolutePath.join("/")}`:"/"}': No such file or directory`
                 )
             }
           
             case 'rm':{
-                const rmTarget = getListSegments(absolutePath)
-                if(!pathArgs){
-                    return print(`rm: missing operand`)
+                const target = getListSegments(absolutePath)
+                if(!pathArgs) return print(`bash: ${cmd}: missing operand`)
+                
+                if(!target){
+                    return print(`bash: ${cmd}: cannot remove '${pathArgs?pathArgs:"./"}': No such file or directory`)
                 }
-                if(!rmTarget){
-                    return print(`bash: rm: cannot remove '${cmd.split(" ")[1]?cmd.split(" ")[1]:"./"}': No such file or directory`)
+                if(target instanceof Dir && !option.includes("r")) {
+                    return print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Is a directory`)
                 }
-                if(rmTarget instanceof Dir && !option.includes("r")) {
-                    return print(`bash: rm: '${cmd.split(" ")[1]?cmd.split(" ")[1]:"./"}': Is a directory`)
+                if(target instanceof SystemDir && !option.includes("f")) {
+                    return print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Permission denied`)
                 }
-                if(rmTarget instanceof SystemDir && !option.includes("f")) {
-                    return print(`bash: rm: '${cmd.split(" ")[1]?cmd.split(" ")[1]:"./"}': Permission denied`)
-                }
-                rmTarget.remove()
+                target.remove()
                 setReload()
                 return;
+            }
+
+            case 'run':{
+                const target = getListSegments(absolutePath)
+                if(!pathArgs) return print(`bash: ${cmd}: missing operand`)
+                if(target instanceof App || target instanceof SymbolicLink) navigate(`/${target instanceof SymbolicLink?target.name:absolutePath.at(-1)}`)
+                else if(target instanceof LinkFile) window.open(target.href)
+                else if(target) return(print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Is not a Application`))
+                else return(print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': No such file or directory`))
+                return ;
             }
 
             case 'exit':{
@@ -220,14 +231,12 @@ function Terminal({app, Update}){
                 return;
             }
 
-            default:{
-                return print(cmd&&"-bash: "+cmd+": command not found");
-            }
+            default:
+                return print(cmd&&`-bash: ${cmd}: command not found`);
+            
         }
 
     }
-    console.log(terminalCommandData)
-
 
     return(
         <Window 
