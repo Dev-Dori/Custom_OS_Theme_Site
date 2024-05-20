@@ -7,11 +7,12 @@ import { Icon } from 'components';
 import * as IconMap from 'images';
 import './style.scss';
 
-function Window({Contents, Update, app,WindowSize}){
+function Window({Contents, Update, app}){
     const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
     const mobile = useContext(DeviceClassification);
     const {key,focused, zIndex} = app;
-    const {WindowHeight,WindowWidth} = WindowSize;
+    const WindowHeight = app.WindowHeight
+    const WindowWidth = app.WindowWidth
     let [[maximized,fix_maximized], setMaximized] = useState([false,false]);
     const [minimized, setMinimized] = useState(app.minimized);
     const [resizing, setResizing] = useState(false);
@@ -25,10 +26,10 @@ function Window({Contents, Update, app,WindowSize}){
                                                             WindowHeight]);
 
     useEffect(() => {
-        window.addEventListener("resize", setWindowResizeing);
+        window.addEventListener("resize", setWindowResizeing(!WindowResizeing));
         if (focused && minimized) setMinimized(false);
         else if (app.minimized && !minimized) setMinimized(app.minimized)
-        return () => window.removeEventListener("resize",setWindowResizeing)
+        return () => window.removeEventListener("resize",setWindowResizeing(!WindowResizeing))
     }, [focused]);
     if(!maximized && left+width>window.innerWidth && window.innerWidth-width>=0) left=window.innerWidth-width
     if(!maximized && top+height>window.innerHeight && window.innerHeight-height>=0) top=window.innerHeight-height
