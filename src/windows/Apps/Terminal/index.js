@@ -33,6 +33,7 @@ function Terminal({app, Update}){
     const preventXss = (str) => str.replaceAll("<","&lt;").replaceAll(">","&gt;")
 
     const handleKeyDownEvent = (event) => {
+
         if(!app.focused) return;
         if(event.ctrlKey&&event.key.length===1&&event.key.toUpperCase()==="C"){
             setTerminalCommandData([
@@ -233,7 +234,7 @@ function Terminal({app, Update}){
             }
 
             case 'mkdir':{
-                const blacklistChar = /[\/?.,;:|*~`!^\-_+<>@\#&\\\'\"]/g;
+                const blacklistChar = /[/?.,;:|*~`!^\-_+<>@#&\\'"]/g;
                 const parent = getListSegments(absolutePath.slice(0,-1))
                 const newDirName = absolutePath.at(-1)
                 if(!pathArgs) return print(`bash: ${cmd}: missing operand`)
