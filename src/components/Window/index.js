@@ -1,5 +1,6 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { DeviceClassification } from 'contexts'
 import { classes } from 'common/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from 'components';
@@ -8,6 +9,7 @@ import './style.scss';
 
 function Window({Contents, Update, app,WindowSize}){
     const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
+    const mobile = useContext(DeviceClassification);
     const {key,focused, zIndex} = app;
     const {WindowHeight,WindowWidth} = WindowSize;
     let [[maximized,fix_maximized], setMaximized] = useState([false,false]);
@@ -34,7 +36,7 @@ function Window({Contents, Update, app,WindowSize}){
     else if (fix_maximized && !((window.innerHeight<=height || window.innerWidth<=width ))) setMaximized([false,false])
     
     return (
-        <div className={classes('Window',key,resizing && 'resizing',focused && 'focused', moving && 'moving',  minimized && 'minimized', maximized && 'maximized')}
+        <div className={classes('Window',key,resizing && 'resizing',focused && 'focused', moving && 'moving',  minimized && 'minimized', (maximized || mobile) && 'maximized')}
             style={{ left, top, width, height, zIndex}}
             onMouseDown={e=>{if(!focused) navigate(key);}}
             onWheel={e=>{if(!focused) navigate(key);}}

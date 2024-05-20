@@ -20,8 +20,9 @@ function Screen(){
     const apps = FileSystem.GetApps();
     const location = useLocation();
 
-    console.log("=== Screen 렌더링 ===",location.pathname)
-    console.log(`MODE : ${mobile?"mobile":"PC"}`)
+    console.log("=== SCREEN RENDERING ===")
+    console.log(`LOCATION : ${location.pathname}`)
+    console.log(`DEVICE MODE : ${mobile?"mobile":"PC"}`)
     useEffect(() => {
         const onResize = () => {setMobile(isMobile());};
         window.addEventListener('resize', onResize);
