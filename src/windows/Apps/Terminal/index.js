@@ -26,7 +26,7 @@ function Terminal({app, Update}){
         scrollToBottom();
         !mobile && window.addEventListener("keydown",handleKeyDownEvent)
         return () => window.removeEventListener("keydown",handleKeyDownEvent);
-    },[command,commandIndex,terminalCommandData,cursorPosition])
+    },[command,commandIndex,terminalCommandData,cursorPosition,mobile])
 
 
     const scrollToBottom = () => {
@@ -74,6 +74,7 @@ function Terminal({app, Update}){
             if(list.length===1){
                 list = list[0]
                 ChangePath.pop() 
+                event.target.value=cmd.concat(`${path.startsWith("./")?path.replace("./",""):path}${list[0]}${list[1].type==="Dir"?"/":""}`).join(" ")
                 setCommand(cmd.concat(`${path.startsWith("./")?path.replace("./",""):path}${list[0]}${list[1].type==="Dir"?"/":""}`).join(" "))
                 setCursorPosition(cmd.concat(`${path.startsWith("./")?path.replace("./",""):path}${list[0]}${list[1].type==="Dir"?"/":""}`).join(" ").length)
             }
@@ -203,15 +204,18 @@ function Terminal({app, Update}){
                 const target = getListSegments(absolutePath)
                 if(!pathArgs) return print(`bash: ${cmd}: missing operand`)
                 
-                if(!target){
+                if(!target)
                     return print(`bash: ${cmd}: cannot remove '${pathArgs?pathArgs:"./"}': No such file or directory`)
-                }
-                if(target instanceof Dir && !option.includes("r")) {
+                
+                if(target instanceof Dir && !option.includes("r")) 
                     return print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Is a directory`)
-                }
-                if(target instanceof SystemDir && !option.includes("f")) {
+                
+                if(target instanceof SystemDir && !option.includes("f")) 
                     return print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Permission denied`)
-                }
+                
+                if(target instanceof App && target.opened && !option.includes("f"))
+                    return print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Application is running (try again with -f)`)
+
                 target.remove()
                 setReload()
                 return;
