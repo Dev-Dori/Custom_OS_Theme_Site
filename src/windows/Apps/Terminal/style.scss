@@ -11,7 +11,7 @@
 }
 
 .Terminal-Body{
-    background: #252a33;
+    background-color: rgba(37,42,51,0.96);
     width: 100%;
     height: 100%;
     color: #eee;
@@ -85,10 +85,11 @@
 
     .terminal-output-ls{
         margin: 15px;
+        font-weight: bold;
     }
 
     .Dir {
-        color: #65a6ca;
+        color: #4ed6ff;
         font-weight: 700;
     }
 
