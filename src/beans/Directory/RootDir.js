@@ -5,14 +5,14 @@ import * as IconMap from 'images';
 
 class RootDir{    
     static get instance(){
-        if (this.rootDir) return this.rootDir;
+        if (this.rootDir) return this.rootDir; // rootDir 초기화 방지
            
         const Apps = {
-                        system:new App(System,false,IconMap.system,{use: true, name: "System"}),
-                        fileExplorer:new App(FileExplorer,true,IconMap.fileExplorer, {use: true, name: "Files"}),
-                        termianl:new App(Terminal,true,IconMap.termianl, {use: true, name: "Terminal"}),
-                        browser:new App(Browser,true,IconMap.browser, {use: true, name: "Blog"}),
-                        projects:new App(Project,true,IconMap.project, {use: false})
+                        system:new App(System,{PinTaskbar:false, icon:IconMap.system, SymbolicLink:{use:true, name: "System"}, WindowSize:{width:700, height:500}}),
+                        FileManager:new App(FileExplorer,{PinTaskbar:true, icon:IconMap.fileExplorer, SymbolicLink:{use:true, name: "Files"}}),
+                        terminal:new App(Terminal,{PinTaskbar:true, icon:IconMap.termianl, SymbolicLink:{use:true, name: "Terminal"}}),
+                        browser:new App(Browser,{PinTaskbar:true, icon:IconMap.browser, SymbolicLink:{use:true, name: "Blog"}}),
+                        projects:new App(Project,{PinTaskbar:true, icon:IconMap.project, SymbolicLink:{use:false}}),
                     }
 
         const Desktop = {
@@ -23,13 +23,18 @@ class RootDir{
         this.rootDir = new SystemDir({
             users: new SystemDir({
                 DevDori: new SystemDir({
-                    apps: new Dir(Apps),
+                    Application: new Dir(Apps),
                     Desktop: new Dir(Object.assign({}, ...Object.keys(Apps).map(app=>{
-                                if(Apps[app].SymbolicLink.use){
+                                if(Apps[app].SymbolicLink.use)
                                     return {[Apps[app].SymbolicLink.name]:new SymbolicLink(Apps[app],app)}
-                                }
+                                return false
                                 }).filter(element => element)
-                            , Desktop))
+                            , Desktop)),
+
+                    Downloads: new Dir(),
+                    Documents: new Dir(),
+                    Music: new Dir(),
+                    Trash: new SystemDir()
                 }),
 
             })

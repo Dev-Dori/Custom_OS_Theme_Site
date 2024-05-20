@@ -1,8 +1,9 @@
 // import { RootDir } from 'beans';
+
 import { ExtensionFunction } from 'beans';
 
 class Dir extends ExtensionFunction{
-    constructor(children) {
+    constructor(children={}) {
         super(null);
         this.type="Dir"
         this.key = Object.keys(children)

@@ -2,7 +2,8 @@ import { none } from 'images';
 import { ExtensionFunction } from 'beans';
 
 class App extends ExtensionFunction{
-    constructor(WindowComponent,PinTaskbar, icon, SymbolicLink) {
+    //PinTaskbar, icon, SymbolicLink
+    constructor(WindowComponent,setting) {
         super()
         this.type = "App"
         this.WindowComponent = WindowComponent;
@@ -12,12 +13,12 @@ class App extends ExtensionFunction{
         this.closing = false;
         this.minimized = false;
         this.maximized = false;
-        this.WindowHeight = 750;
-        this.WindowWidth = 450;
 
-        this.PinTaskbar = PinTaskbar||false;
-        this.icon = icon? icon : none;
-        this.SymbolicLink = SymbolicLink;
+        this.PinTaskbar = setting.PinTaskbar||false;
+        this.icon = setting.icon? setting.icon : none;
+        this.SymbolicLink = setting.SymbolicLink;
+        this.WindowHeight = setting.WindowSize?setting.WindowSize.height:400;
+        this.WindowWidth = setting.WindowSize?setting.WindowSize.width:600;
     }
 }
 

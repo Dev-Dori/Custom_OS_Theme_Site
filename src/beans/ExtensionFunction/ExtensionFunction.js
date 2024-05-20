@@ -1,5 +1,10 @@
+import { none } from 'images';
 
 class ExtensionFunction{
+    constructor(){
+        this.icon = none;
+    }
+
     GetUserDir(user="DevDori"){
         return this.getChild('users',user);
     }
@@ -11,7 +16,7 @@ class ExtensionFunction{
 
     GetAppsDir(){
         const UserDir = this.GetUserDir();
-        return UserDir?UserDir.getChild('apps'):undefined;
+        return UserDir?UserDir.getChild('Application'):undefined;
     }
 
     GetApps(){
