@@ -2,7 +2,7 @@
 
 .Window {
   position: absolute;
-  background-color: white;
+  // background-color: white;
   box-shadow: 0 0 48px rgba(black, .3);
   border-radius: 10px;
   display:  inline-flex;
@@ -107,9 +107,7 @@
     background-color: $color-light;
     display: flex;
     flex-direction: column;
-    outline-color: #CCC;
-    outline-style: auto;
-    outline-width: initial;
+    box-shadow: 0px -2px 0px 0px #cccccccc inset;
     overflow: hidden;
     height: 29px;
     position: relative;
