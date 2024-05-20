@@ -29,11 +29,8 @@ function Terminal({app, Update}){
     },[command,commandIndex,terminalCommandData,cursorPosition,mobile])
 
 
-    const scrollToBottom = () => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-    };
+    const scrollToBottom = () => scrollRef.current && (scrollRef.current.scrollTop = scrollRef.current.scrollHeight);
+    const preventXss = (str) => str.replaceAll("<","&lt;").replaceAll(">","&gt;")
 
     const handleKeyDownEvent = (event) => {
         if(!app.focused) return;
@@ -52,7 +49,7 @@ function Terminal({app, Update}){
             inputCommand(command)
             setCursorPosition(0)
             setCommandIndex([command.length>0?getCommandHistory().length+1:getCommandHistory().length,""])
-            setCommand("")
+            setCommand(event.target.value="")
         }else if(event.key==="Backspace"){ 
             setCommand(command.substring(0,cursorPosition-1)+command.substring(cursorPosition))
             setCommandIndex([commandIndex,command.substring(0,cursorPosition-1)+command.substring(cursorPosition)])
@@ -74,9 +71,9 @@ function Terminal({app, Update}){
             if(list.length===1){
                 list = list[0]
                 ChangePath.pop() 
-                event.target.value=cmd.concat(`${path.startsWith("./")?path.replace("./",""):path}${list[0]}${list[1].type==="Dir"?"/":""}`).join(" ")
-                setCommand(cmd.concat(`${path.startsWith("./")?path.replace("./",""):path}${list[0]}${list[1].type==="Dir"?"/":""}`).join(" "))
-                setCursorPosition(cmd.concat(`${path.startsWith("./")?path.replace("./",""):path}${list[0]}${list[1].type==="Dir"?"/":""}`).join(" ").length)
+                event.target.value = cmd.concat(`${path.startsWith("./")?path.replace("./",""):path}${list[0]}${list[1].type==="Dir"?"/":""}`).join(" ")
+                setCommand(event.target.value)
+                setCursorPosition(event.target.value.length)
             }
 
         }else if(event.key==="ArrowLeft"||event.key==="ArrowRight"){
@@ -87,7 +84,8 @@ function Terminal({app, Update}){
         }else if(event.key==="ArrowUp" || event.key==="ArrowDown"){
             let commandhistory=getCommandHistory().concat([commandIndex[1]])
             let cmdIndex=event.key==="ArrowUp"?commandIndex[0]-1>=0?commandIndex[0]-1:0:commandIndex[0]+1<commandhistory.length?commandIndex[0]+1:commandIndex[0]
-            setCommand(commandhistory[cmdIndex].replaceAll("&lt;","<").replaceAll("&gt;",">"))
+            event.target.value=commandhistory[cmdIndex].replaceAll("&lt;","<").replaceAll("&gt;",">")
+            setCommand(event.target.value)
             setCursorPosition(commandhistory[cmdIndex].length)
             setCommandIndex([cmdIndex,commandIndex[1]])
             event.preventDefault(); // 방향키 제어시 스크롤 움직임 방지
@@ -97,7 +95,7 @@ function Terminal({app, Update}){
     const getCommandHistory=()=>{
         return terminalCommandData.filter((tmpCmdData)=>{
             return tmpCmdData.type==="input"&&!tmpCmdData.hidden&&tmpCmdData.value&&tmpCmdData.value[0]!=="^"
-        }).map(tmpCmdData=>tmpCmdData.value)
+        }).map(tmpCmdData=>preventXss(tmpCmdData.value))
     }
 
     const getAbsolutePath=(path)=>{
@@ -116,12 +114,9 @@ function Terminal({app, Update}){
         while(path.indexOf("..")!==-1) path.splice(path.indexOf("..")-1,2)
         let tmpdir = FileSystem
         path&&path.forEach(EachDirName=>{
-            if((tmpdir&&tmpdir.getChild(EachDirName))||!EachDirName){
+            if((tmpdir&&tmpdir.getChild(EachDirName))||!EachDirName)
                 tmpdir=tmpdir.getChild(EachDirName)
-            }else{
-                tmpdir=false;
-                return;
-            }
+            else return(tmpdir=false);
         })
         return tmpdir
     }
@@ -136,7 +131,7 @@ function Terminal({app, Update}){
     }
 
     const inputCommand = (input) => {
-        input=input.replaceAll("<","&lt;").replaceAll(">","&gt;")
+        input=preventXss(input)
         const cmd=input.split(/\s+/)[0]
         const args=input.split(/\s+/).splice(1)
         const pathArgs = args.find(arg => !arg.startsWith('-'));
@@ -146,20 +141,26 @@ function Terminal({app, Update}){
         
         switch(cmd){
             case 'help':{
-                let CommandOutput=[
-                                "help   \t\tshow all the possible commands",
-                                "whoami \t\tdisplay information about DevDori",
-                                "pwd    \t\tPrint the name of the current working directory.",
-                                "ls     \t\tlist directory contents",
-                                "cd     \t\tchange the working directory",
-                                "rm     \t\tremoves the entries for a specified file or directory",
-                                "run    \t\trunning a specific application",
-                                "mkdir  \t\tmake a new directory",
-                                "history\t\tDisplay or manipulate the history list.",
-                                "clear  \t\tclear the terminal screen",
-                                ].join("\n")
+                let cmdlist = {
+                    help   : "show all the possible commands",
+                    whoami : "display information about DevDori",
+                    pwd    : "Print the name of the current working directory.",
+                    ls     : "list directory contents",
+                    cd     : "change the working directory",
+                    rm     : "removes the entries for a specified file or directory",
+                    run    : "running a specific application",
+                    mkdir  : "make a new directory",
+                    history: "Display or manipulate the history list.",
+                    clear  : "clear the terminal screen",
+                }
 
-                return print(CommandOutput);
+                // return print(CommandOutput);
+                return print(Object.keys(cmdlist).map(cmd=>(
+                    `<div class="command-help">
+                        <strong class="command-name">${cmd}</strong>
+                        <span class="command-explain">${cmdlist[cmd]}</span>
+                    </div>`
+                )).join(" "))
             }
 
             case 'whoami':
@@ -208,10 +209,10 @@ function Terminal({app, Update}){
                     return print(`bash: ${cmd}: cannot remove '${pathArgs?pathArgs:"./"}': No such file or directory`)
                 
                 if(target instanceof Dir && !option.includes("r")) 
-                    return print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Is a directory`)
+                    return print(`bash: ${cmd}: '/${absolutePath.join('/')}': Is a directory`)
                 
                 if(target instanceof SystemDir && !option.includes("f")) 
-                    return print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Permission denied`)
+                    return print(`bash: ${cmd}: '/${absolutePath.join('/')}': Permission denied`)
                 
                 if(target instanceof App && target.opened && !option.includes("f"))
                     return print(`bash: ${cmd}: '${pathArgs?pathArgs:"./"}': Application is running (try again with -f)`)
@@ -232,8 +233,11 @@ function Terminal({app, Update}){
             }
 
             case 'mkdir':{
+                const blacklistChar = /[\/?.,;:|*~`!^\-_+<>@\#&\\\'\"]/g;
                 const parent = getListSegments(absolutePath.slice(0,-1))
                 const newDirName = absolutePath.at(-1)
+                if(!pathArgs) return print(`bash: ${cmd}: missing operand`)
+                if(blacklistChar.test(newDirName)) return print(`bash: ${cmd}: Directory Name is Invalid (${newDirName})`)
                 if(parent.key.includes(newDirName)) return(print(`bash: ${cmd}: cannot create directory '${newDirName?newDirName:"./"}': File already exists`))
                 parent.key.push(newDirName)
                 parent.children[newDirName] = new Dir({})
@@ -266,7 +270,7 @@ function Terminal({app, Update}){
                     Object.entries(terminalCommandData).map(([key]) => (
                             key>terminalCommandData[0].value&&(
                                 terminalCommandData[key].type==="input"?
-                                <div key={key} dangerouslySetInnerHTML={{__html:`${user}@W0R!D:${terminalCommandData[key].workDir}$ ${terminalCommandData[key].value}`}}></div>
+                                <div key={key} dangerouslySetInnerHTML={{__html:`${user}@W0R!D:${terminalCommandData[key].workDir}$ ${preventXss(terminalCommandData[key].value)}`}}></div>
                                 :
                                 terminalCommandData[key].type==="output"?
                                 <div key={key} dangerouslySetInnerHTML={{__html:terminalCommandData[key].value}}></div>

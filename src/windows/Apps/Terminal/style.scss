@@ -57,6 +57,23 @@
 
     }
 
+    .command-help{
+        margin: 3px 0px 3px 5px;        
+        display: flex;
+        flex-wrap: wrap;
+        .command-name{
+            width: 100px;
+            color: chartreuse;
+            flex-basis: 100px;
+            flex-grow: 0;
+        }
+        .command-explain{
+            flex-basis: 0;
+            flex-grow: 1;
+        }
+    }
+
+
     .mobile-terminal-input{
         position: absolute;
         top: 0;
@@ -76,7 +93,7 @@
     }
 
     .App,.SymbolicLink {
-        color: #9dd55e;
+        color: chartreuse;
     }
 
     .LinkFile{
