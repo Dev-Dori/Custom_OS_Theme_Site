@@ -16,7 +16,7 @@ class ExtensionFunction{
 
     GetAppsDir(){
         const UserDir = this.GetUserDir();
-        return UserDir?UserDir.getChild('Application'):undefined;
+        return UserDir?UserDir.getChild('Applications'):undefined;
     }
 
     GetApps(){
