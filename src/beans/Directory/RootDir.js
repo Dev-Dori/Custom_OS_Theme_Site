@@ -1,6 +1,6 @@
 import { Dir, SystemDir } from 'beans';
 import { App, LinkFile, SymbolicLink } from 'beans'; //SymlinkFile
-import { Terminal, FileExplorer, System, Browser, Project } from 'windows';
+import { Terminal, FileManager, System, Browser, Project } from 'windows';
 import * as IconMap from 'images';
 
 class RootDir{    
@@ -9,7 +9,7 @@ class RootDir{
            
         const Apps = {
                         system:new App(System,{PinTaskbar:false, icon:IconMap.system, SymbolicLink:{use:true, name: "System"}, WindowSize:{width:700, height:500}}),
-                        FileManager:new App(FileExplorer,{PinTaskbar:true, icon:IconMap.fileExplorer, SymbolicLink:{use:true, name: "Files"}}),
+                        FileManager:new App(FileManager,{PinTaskbar:true, icon:IconMap.FileManager, SymbolicLink:{use:true, name: "Files"}}),
                         terminal:new App(Terminal,{PinTaskbar:true, icon:IconMap.termianl, SymbolicLink:{use:true, name: "Terminal"}}),
                         browser:new App(Browser,{PinTaskbar:true, icon:IconMap.browser, SymbolicLink:{use:true, name: "Blog"}}),
                         projects:new App(Project,{PinTaskbar:true, icon:IconMap.project, SymbolicLink:{use:false}}),
@@ -23,7 +23,7 @@ class RootDir{
         this.rootDir = new SystemDir({
             users: new SystemDir({
                 DevDori: new SystemDir({
-                    Application: new Dir(Apps),
+                    Applications: new Dir(Apps),
                     Desktop: new Dir(Object.assign({}, ...Object.keys(Apps).map(app=>{
                                 if(Apps[app].SymbolicLink.use)
                                     return {[Apps[app].SymbolicLink.name]:new SymbolicLink(Apps[app],app)}

@@ -1,9 +1,9 @@
 // https://github.com/icon11-community 아이콘
-export { default as none } from './Desktop/FileExplorer.png';
+export { default as none } from './Desktop/FileManager.png';
 
 export { default as Projects } from './Desktop/Project.png';
 export { default as Documents } from './Desktop/Documents.png';
-export { default as Files } from './Desktop/FileExplorer.png';
+export { default as Files } from './Desktop/FileManager.png';
 export { default as System } from './Desktop/Desktop.png';
 export { default as Github } from './Desktop/Github.png';
 export { default as Terminal } from './Desktop/Terminal.png';
