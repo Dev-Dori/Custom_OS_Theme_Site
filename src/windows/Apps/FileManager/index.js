@@ -1,6 +1,7 @@
 import { Window } from 'components';
 import { App, Dir, LinkFile, SymbolicLink } from 'beans';
 import { FileSystemContext, DeviceClassification } from 'contexts'
+import { Icon } from 'components';
 import { useContext, useEffect, useState } from 'react';
 import { useSearchParams,useNavigate } from 'react-router-dom'
 import './style.scss'
@@ -12,6 +13,7 @@ function FileManager(props){
     const [workDir, setWorkDir] = useState("/users/DevDori/")
     const [searchParams, setSearchParams]=useSearchParams();
     const navigate = useNavigate();
+    const user = "DevDori"
     const homeDir = "/users/DevDori/"
 
     useEffect(()=>{
@@ -52,6 +54,7 @@ function FileManager(props){
         setSearchParams(searchParams);
     }
 
+
     return(
         <Window 
         Update = {Update}
@@ -60,31 +63,38 @@ function FileManager(props){
         Contents={(
             <div className='FileManager-Body'>
                 <div className='SideBar'>
-                    <div className='FileManager-Directory'onClick={()=>setDir("/")}>Root</div>
-                    <div className='FileManager-Directory'onClick={()=>setDir(homeDir)}>Home</div>
-                    {getListSegments(getAbsolutePath(homeDir)).key.map(key=>{
-                            return(<div className='FileManager-Directory' 
-                                        key={`FileManager-Directory-${key}`}
-                                        onClick={()=>setDir(`${homeDir}${key}/`)}
-                            >{key}</div>)
+                    <div className={`FileManager-Directory ${workDir==="/"&&"focused"}`}onClick={()=>setDir("/")}>Root</div>
+                    <div className={`FileManager-Directory ${workDir.endsWith("/DevDori/")&&"focused"}`}onClick={()=>setDir(homeDir)}>Home</div>
+                    {getListSegments(getAbsolutePath(homeDir)).key.map(app=>{
+                            return(<div className={`FileManager-Directory ${workDir.includes(app)&&"focused"}`} 
+                                        app={`FileManager-Directory-${app}`}
+                                        onClick={()=>setDir(`${homeDir}${app}/`)}
+                            >{app}</div>)
                     })}
                 </div>
                 <div className='Contents'>
                     {
                         getListSegments(getAbsolutePath(workDir)).key.length>0?
-                            getListSegments(getAbsolutePath(workDir)).key.map(key=>{
-                                return(<div key={`FileManager-InnerFile-${key}`}
-                                    onClick={()=>{
-                                        const target = getListSegments(getAbsolutePath(workDir)).children[key]
-                                        if(target instanceof Dir) setDir(`${workDir}${key}/`)
-                                        else if(target instanceof App) navigate(key)
-                                        else if(target instanceof SymbolicLink) navigate(target.name)
-                                        else if(target instanceof LinkFile) window.open(target.href)
-                                    }}
-                                >{key}</div>)
+                            getListSegments(getAbsolutePath(workDir)).key.map(app=>{
+                                const list = getListSegments(getAbsolutePath(workDir))
+                                return(
+                                <div app={`FileManager-InnerFile-${app}`} 
+                                     className={'FileManager-InnerFile'}
+                                        onClick={()=>{
+                                            console.log(workDir.includes(app) && "focused")
+                                            const target = list.children[app]
+                                            if(target instanceof Dir) setDir(`${workDir}${app}/`)
+                                            else if(target instanceof App) navigate(app)
+                                            else if(target instanceof SymbolicLink) navigate(target.name)
+                                            else if(target instanceof LinkFile) window.open(target.href)
+                                        }
+                                }>
+                                    <Icon iconUrl={list.children[app].icon}/>
+                                    <div className='FileName'>{app}</div>
+                                </div>)
                             })
                         :
-                        (<div>EMPTY</div>)
+                        (<div className='FileManager-Empty'>This Folder is Empty</div>)
                     }
                 </div>
             </div>

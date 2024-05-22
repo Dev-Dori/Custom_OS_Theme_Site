@@ -22,7 +22,9 @@ function Screen(){
 
     console.log("=== SCREEN RENDERING ===")
     console.log(`LOCATION : ${location.pathname}`)
+    console.log(`PARAMETER : ${unescape(location.search)}`)
     console.log(`DEVICE MODE : ${mobile?"mobile":"PC"}`)
+
     useEffect(() => {
         const onResize = () => {setMobile(isMobile());};
         window.addEventListener('resize', onResize);
