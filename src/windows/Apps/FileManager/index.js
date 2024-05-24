@@ -6,8 +6,8 @@ import { useContext, useEffect, useState } from 'react';
 import { useSearchParams,useNavigate } from 'react-router-dom'
 import './style.scss'
 import { ComingSoon } from 'windows';
-import { LuFolderRoot as Root ,LuFolderOpenDot as Home,LuFolderHeart as Applications, LuMonitorCheck as Desktop, LuFile as Documents,LuFolderDown as Download, LuMusic4 as Music, LuTrash2 as Trash} from "react-icons/lu";
-
+import { LuFolderRoot as Root ,LuFolderOpenDot as Home,LuFolderHeart as Applications, LuMonitorCheck as Desktop, LuFile as Documents,LuFolderDown as Download, LuMusic4 as Music, LuTrash2 as Trash, LuFolder as Folder} from "react-icons/lu";
+import { LuChevronDown as ArrowDown, LuChevronRight as ArrowRight } from "react-icons/lu";
 function FileManager(props){
     const { Update, app } = props;
     const [FileSystem, reload] = useContext(FileSystemContext)
@@ -69,18 +69,31 @@ function FileManager(props){
                         <div className={`FileManager-Directory ${workDir.endsWith("/DevDori/")&&"focused"}`}onClick={()=>setDir(homeDir)}><Home/> Home</div>
                     </div>
 
-                    <div className='SideBar-Group'>  
+                    <div className='SideBar-Group HomeDir'>  
                         <div className='Group-Title'>Libraries</div>                
                         {getListSegments(getAbsolutePath(homeDir)).key.map(app=>{
+                                const target = getListSegments(getAbsolutePath(homeDir)).children[app]
                                 const AppSideBarIcon = SideBarIcon[app]
-                                return(<div className={`FileManager-Directory ${workDir.includes(app)&&"focused"}`} 
+                                return( 
+                                    <div    className={`FileManager-Directory ${(workDir===homeDir+app)&&"focused"}`} 
                                             app={`FileManager-Directory-${app}`}
-                                            onClick={()=>setDir(`${homeDir}${app}/`)}
-                                ><AppSideBarIcon/> {app}</div>)
+                                            onClick={()=>setDir(`${homeDir}${app}/`)}>
+
+                                            {target.key.length>0&&((workDir.includes(homeDir+app))?
+                                                                        <ArrowDown className='Arrow'/>
+                                                                        :
+                                                                        <ArrowRight className='Arrow'/>)}
+
+                                            {AppSideBarIcon&&<AppSideBarIcon/>} {app}
+
+                                    </div>
+                                )
                         })}
                     </div>
+
                 </div>
                 <div className='Contents'>
+                    <div className='Directory-Path'>{workDir}</div>
                     {
                         getListSegments(getAbsolutePath(workDir)).key.length>0?
                             getListSegments(getAbsolutePath(workDir)).key.map(app=>{
