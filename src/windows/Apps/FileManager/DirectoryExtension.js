@@ -14,7 +14,7 @@ function DirectoryExtension({Directory,workDir,setWorkDir,pwd}){
                 const target = children[key]
                 return(
                     <div className='FileManager-Directory Children' key={`FileManager-Directory-Children-${key}`}>
-                        <div className={`item ${(workDir===`${pwd}${key}/`)&&"focused"}`}
+                        <div className={`item ${([`${pwd}${key}/`,`${pwd}${key}`].includes(workDir))&&"focused"}`}
                             onClick={()=>{
                                 if(target instanceof App) navigate(key)
                                 if(target instanceof SymbolicLink) navigate(target.name)

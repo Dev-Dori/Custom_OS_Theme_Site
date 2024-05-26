@@ -10,12 +10,19 @@ import { LuFolderRoot as Root ,LuFolderOpenDot as Home,LuFolderHeart as Applicat
 import { LuChevronDown as ArrowDown, LuChevronRight as ArrowRight } from "react-icons/lu";
 function FileManager(props){
     const { Update, app } = props;
+    const [serchParams, setSearchParams] = useSearchParams();
     const [FileSystem, reload] = useContext(FileSystemContext)
     const [workDir, setWorkDir] = useState("/users/DevDori/")
     const navigate = useNavigate();
     const user = "DevDori"
     const homeDir = "/users/DevDori/"
     const SideBarIcon = {Applications:Applications, Desktop:Desktop, Downloads:Download, Documents:Documents, Music:Music, Trash:Trash}
+
+    useEffect(()=>{
+        const path = serchParams.get("path")
+        if(path&& getListSegments(getAbsolutePath(path))) setWorkDir(`/${getAbsolutePath(path).join("/")}/`)
+        window.history.pushState({page:1},{page:1},window.location.href.split("?")[0])
+    },[])
 
     const getAbsolutePath=(path)=>{
         if(!path) path=workDir;
@@ -39,8 +46,6 @@ function FileManager(props){
         })
         return tmpdir
     }
-
-    console.log(workDir,getListSegments(getAbsolutePath(workDir)).key.length)
 
     return(
         <Window 
@@ -71,7 +76,7 @@ function FileManager(props){
                                             key={`FileManager-Directory-${app}`} 
                                             app={`FileManager-Directory-${app}`}>
 
-                                            <div className={`item ${(workDir===homeDir+app+"/")&&"focused"}`}
+                                            <div className={`item ${([homeDir+app,homeDir+app+"/"].includes(workDir))&&"focused"}`}
                                                 onClick={()=>setWorkDir(workDir.startsWith(`${homeDir}${app}/`)?`${homeDir}${app}`:`${homeDir}${app}/`)}>
                                                 {target.key.length>0&&(workDir.startsWith(`${homeDir}${app}/`)?
                                                                             <ArrowDown className='Arrow'/>
@@ -91,7 +96,13 @@ function FileManager(props){
 
                 </div>
                 <div className='Contents'>
-                    <div className='Directory-Path'>{workDir}</div>
+                    <input type="text" className='Directory-Path' key={workDir} defaultValue={workDir} 
+                           onKeyUp={(event)=>{
+                            if(event.key==="Enter"&&getListSegments(getAbsolutePath(event.target.value))){
+                                setWorkDir(event.target.value)
+                            }}}
+                            />
+
                     {
                         getListSegments(getAbsolutePath(workDir)).key.length>0?
                             getListSegments(getAbsolutePath(workDir)).key.map(app=>{
