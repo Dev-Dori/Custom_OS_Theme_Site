@@ -16,7 +16,7 @@ function FileManager(props){
     const user = "DevDori"
     const homeDir = "/users/DevDori/"
     const SideBarIcon = {Applications:Applications, Desktop:Desktop, Downloads:Download, Documents:Documents, Music:Music, Trash:Trash}
-    
+
     const getAbsolutePath=(path)=>{
         if(!path) path=workDir;
         if(path==="~") path=`/users/${user}`
@@ -40,6 +40,7 @@ function FileManager(props){
         return tmpdir
     }
 
+    console.log(workDir,getListSegments(getAbsolutePath(workDir)).key.length)
 
     return(
         <Window 
@@ -51,34 +52,41 @@ function FileManager(props){
                 <div className='SideBar'>
                     <div className='SideBar-Group'>        
                         <div className='Group-Title'>Base</div>                
-                        <div className={`FileManager-Directory ${workDir==="/"&&"focused"}`}onClick={()=>setWorkDir("/")}><Root/> Root</div>
-                        <div className={`FileManager-Directory ${workDir.endsWith("/DevDori/")&&"focused"}`}onClick={()=>setWorkDir(homeDir)}><Home/> Home</div>
+                        <div className={`FileManager-Directory ${workDir==="/"&&"focused"}`}onClick={()=>setWorkDir("/")}>                        
+                            <div className='item'><Root/> Root</div>
+                        </div>
+                        <div className={`FileManager-Directory ${workDir===homeDir&&"focused"}`}onClick={()=>setWorkDir(homeDir)}>
+                            <div className='item'><Home/> Home</div>
+                        </div>
                     </div>
 
                     <div className='SideBar-Group HomeDir'>  
-                        <div className='Group-Title'>Libraries</div>                
+                        <div className='Group-Title'>Libraries</div>      
+
                         {getListSegments(getAbsolutePath(homeDir)).key.map(app=>{
                                 const target = getListSegments(getAbsolutePath(homeDir)).children[app]
                                 const AppSideBarIcon = SideBarIcon[app]
                                 return( 
-                                    <div    className={`FileManager-Directory ${(workDir===homeDir+app)&&"focused"}`}
+                                    <div    className={`FileManager-Directory`}
                                             key={`FileManager-Directory-${app}`} 
-                                            app={`FileManager-Directory-${app}`}
-                                            onClick={()=>setWorkDir(`${homeDir}${app}/`)}>
+                                            app={`FileManager-Directory-${app}`}>
 
-                                            {target.key.length>0&&(workDir.includes(homeDir+app)?
-                                                                        <ArrowDown className='Arrow'/>
-                                                                        :
-                                                                        <ArrowRight className='Arrow'/>)}
+                                            <div className={`item ${(workDir===homeDir+app+"/")&&"focused"}`}
+                                                onClick={()=>setWorkDir(workDir.startsWith(`${homeDir}${app}/`)?`${homeDir}${app}`:`${homeDir}${app}/`)}>
+                                                {target.key.length>0&&(workDir.startsWith(`${homeDir}${app}/`)?
+                                                                            <ArrowDown className='Arrow'/>
+                                                                            :
+                                                                            <ArrowRight className='Arrow'/>)}
 
-                                            {(AppSideBarIcon&&<AppSideBarIcon/>)||<Folder/>} {app}
-
-                                            {target.key.length>0&&
-                                            (workDir.includes(homeDir+app))&&
-                                            <DirectoryExtension Directory={target} workDir={workDir} setWorkDir={setWorkDir} pwd={`${homeDir}${app}/`} />}
+                                                {(AppSideBarIcon&&<AppSideBarIcon/>)||<Folder/>} {app}
+                                            </div>
+                                                {target.key.length>0&&
+                                                (workDir.startsWith(`${homeDir}${app}/`))&&
+                                                <DirectoryExtension Directory={target} workDir={workDir} setWorkDir={setWorkDir} pwd={`${homeDir}${app}/`} />}
                                     </div>
                                 )
                         })}
+                        
                     </div>
 
                 </div>
@@ -93,7 +101,7 @@ function FileManager(props){
                                      key={`FileManager-InnerFile-${app}`}
                                      className={'FileManager-InnerFile'}
                                         onClick={()=>{
-                                            console.log(workDir.includes(app) && "focused")
+                                            console.log(`${workDir}${app}/`)
                                             const target = list.children[app]
                                             if(target instanceof Dir) setWorkDir(`${workDir}${app}/`)
                                             else if(target instanceof App) navigate(app)
