@@ -29,6 +29,27 @@ class ExtensionFunction{
         return DesktopDir?DesktopDir.children:undefined;
     }
 
+    GetName(){
+        if(!this.parent) return ""
+        return Object.keys(this.parent.children).find(key => this.parent.children[key]===this)
+    }
+
+    GetWorkDir(App=this, Path=[]){
+        const Parent=App.parent
+        if(!Parent) return Path
+        const Appkey = Object.keys(Parent.children).find(key => Parent.children[key]===App)
+        Path.unshift(Appkey)
+        return App.GetWorkDir(Parent,Path)
+    }
+
+    Search(Keyword, App=this, Path={}){
+        if(App.GetName().includes(Keyword)) Path[App.GetName()]=App
+        typeof(App.key)==="object" && App.key.map(key=>{
+            Path=App.Search(Keyword,App.children[key], Path)
+        })
+        return Path
+    }
+
     remove() {
         if(this.parent===undefined) return(this.key=[],this.children={})
         const Appkey = Object.keys(this.parent.children).find(key => this.parent.children[key]===this)

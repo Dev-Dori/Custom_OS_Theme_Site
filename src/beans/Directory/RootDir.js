@@ -34,7 +34,7 @@ class RootDir{
                     Downloads: new Dir(),
                     Documents: new Dir(),
                     Music: new Dir(),
-                    Trash: new SystemDir()
+                    Trash: new SystemDir({thisistrash:new Dir({test:new Dir()})})
                 }),
 
             })
