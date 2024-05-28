@@ -9,7 +9,7 @@ class RootDir{
            
         const Apps = {
                         system:new App(System,{PinTaskbar:false, icon:IconMap.system, SymbolicLink:{use:true, name: "System"}, WindowSize:{width:700, height:500}}),
-                        FileManager:new App(FileManager,{PinTaskbar:true, icon:IconMap.FileManager, SymbolicLink:{use:true, name: "Files"}}),
+                        FileManager:new App(FileManager,{PinTaskbar:true, icon:IconMap.FileManager, SymbolicLink:{use:true, name: "Files"}, WindowSize:{width:650, height:400}}),
                         terminal:new App(Terminal,{PinTaskbar:true, icon:IconMap.termianl, SymbolicLink:{use:true, name: "Terminal"}}),
                         browser:new App(Browser,{PinTaskbar:true, icon:IconMap.browser, SymbolicLink:{use:true, name: "Blog"}}),
                         projects:new App(Project,{PinTaskbar:true, icon:IconMap.project, SymbolicLink:{use:false}}),

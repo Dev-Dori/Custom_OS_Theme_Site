@@ -8,6 +8,7 @@ function DirectoryExtension({Directory,workDir,setWorkDir,pwd}){
     const navigate = useNavigate();
     const key = Directory.key;
     const children = Directory.children;
+    
     return (
         <div className="Sub-Directory">
             {key.map(key=>{
