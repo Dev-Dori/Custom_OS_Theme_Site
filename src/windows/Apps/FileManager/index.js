@@ -66,7 +66,7 @@ function FileManager(props){
         Contents={(
             <div className='FileManager-Body'>
                 <div className='SideBar'>
-                    <input  type="text" className='FileManager-Search' placeholder='Search'
+                    <input  type="text" className='FileManager-Search' placeholder='🔍 Search'
                             // key={workDir}
                             // defaultValue={search}
                             onFocus={(event)=>{setSearch(event.target.value)}}
