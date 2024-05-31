@@ -15,7 +15,7 @@ function Desktop(){
     return (
         <div className='Desktop'>
             {/* <div className="Wallpaper" style={{backgroundImage: `linear-gradient(to top, rgba(19, 21, 25, 0.5), rgba(19, 21, 25, 0.5)),url(${background})`}}></div> */}
-            <div className="Wallpaper" style={{backgroundImage: `url(${background})`}}></div>
+            {/* <div className="Wallpaper" style={{backgroundImage: `url(${background})`}}></div> */}
             <div className='app-container'>
                 {GetDesktop&&GetDesktop.key.map(key=>{
                     if(!GetDesktop.children[key].href){
