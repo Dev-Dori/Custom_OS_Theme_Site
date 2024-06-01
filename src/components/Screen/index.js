@@ -1,6 +1,6 @@
 // import { useState, useEffect } from 'react';
 import React from 'react'
-import { Desktop,Taskbar } from 'components';
+import { Wallpaper,Desktop,Taskbar } from 'components';
 import { DeviceClassification, FileSystemContext } from 'contexts'
 import { RootDir } from 'beans';
 import { useState, useEffect } from 'react';
@@ -62,10 +62,13 @@ function Screen(){
     return (
         <DeviceClassification.Provider value={mobile}>
             <FileSystemContext.Provider value={[FileSystem, ()=>{setReload(reload+1)}]}>
-                {FileSystem.key.length>0&&(<div className='Screen'>
-                    <Desktop />
-                    <Taskbar />
-                </div>)}
+                {FileSystem.key.length>0&&(
+                    <div className='Screen'>
+                        <Wallpaper />
+                        <Taskbar />
+                        <Desktop />
+                    </div>
+                )}
             </FileSystemContext.Provider>
         </DeviceClassification.Provider>
       );
