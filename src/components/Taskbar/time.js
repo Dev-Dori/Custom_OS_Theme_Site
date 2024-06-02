@@ -1,19 +1,6 @@
 import { useState,useEffect } from 'react';
 
 
-const getClock = () => {
-    const two = (x) => x < 10 ? `0${x}` : x;
-    const today = new Date();
-    const H = today.getHours();
-    const m = today.getMinutes();
-    const hh = two(H % 12 || 12);
-    const mm = two(m);
-    const A = ['AM', 'PM'][H / 12 | 0];
-    return `${hh}:${mm} ${A}`;
-  };
-  
-
-
 function Timer(){
     const [time, setTime] = useState(new Date());
 
@@ -24,20 +11,24 @@ function Timer(){
       return () => clearInterval(interval);
     }, []);
 
+
+    const GetDate = () =>{
+        const dateString = time.toLocaleTimeString("ko-KR", {
+            hour: "numeric",
+            minute: "numeric",
+        })
+        const dayName = time.toLocaleDateString("ko-KR",{weekday: 'short'})
+        const year=time.getFullYear();
+        const month=String(time.getMonth()+1).padStart(2, "0");
+        const day = String(time.getDate()).padStart(2, "0");
+        const hour = time.getHours();
+        return `${month}월 ${day}일 (${dayName}) ${dateString}`
+    }
+
     return(
         <div className="label Date">
             <div>
-                {time.toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    minute: "numeric",
-                })}
-            </div>
-            <div>
-                {time.toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "numeric",
-                })}
+                {GetDate()}
             </div>
         </div>
     );
