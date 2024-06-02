@@ -6,6 +6,7 @@ import './style.scss'
 // import background from 'images/Wallpapers/background2.webp';
 import { Wallpapers as background } from 'images';
 import { Link } from 'react-router-dom';
+import { App, Dir, LinkFile, SymbolicLink, SystemDir } from 'beans';
 
 function Desktop(){
     const [FileSystem]  = useContext(FileSystemContext);
@@ -20,7 +21,12 @@ function Desktop(){
                 {GetDesktop&&GetDesktop.key.map(key=>{
                     if(!GetDesktop.children[key].href){
                         return(
-                            <Link to={GetDesktop.children[key].name} className='shortcut' id={'cortcut-'+key} key={key}>
+                            <Link to={GetDesktop.children[key] instanceof App || GetDesktop.children[key] instanceof SymbolicLink?
+                                        GetDesktop.children[key].name
+                                        :
+                                        `FileManager?path=/${GetDesktop.children[key].GetWorkDir().join("/")}`
+                                    } 
+                                    className='shortcut' id={'cortcut-'+key} key={key}>
                                 <Icon iconUrl={GetDesktop.children[key].icon}/> 
                                 <div className='name'>{key}</div>
                             </Link>
