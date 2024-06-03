@@ -2,23 +2,30 @@
 
 .Taskbar {
     position: relative;
-    height: $taskbar-height;
+    // height: $taskbar-height;
+    height: 3rem;
     display: flex;
     align-items: stretch;
     box-sizing: border-box;
     justify-content: center;
-    backdrop-filter: blur(10px);
-    // background-color: rgba(44, 41, 35, 0.479);
-    background-color: rgba(34, 31, 26, 1);
-    // background-color: #322d25;
     //   background-color: rgba(black, .2);
-    // background-color: rgba(51, 51, 51, 0.6);
-    // backdrop-filter: saturate(180%) blur(40px);
+    background-color: rgba(51, 51, 51, 0.6);
+    backdrop-filter: saturate(180%) blur(40px);
     font-size: $font-size-normal;
     color: #ffff;
     font-family: NotoSansKR, sans-serif;
     font-weight: 550;
-    // font-family: 'Fira Mono', Consolas, Menlo, Monaco, 'Courier New', Courier, monospace;
+
+    .Menu{
+        position: relative;
+        display: flex;
+        align-items: center;
+        text-align: center; 
+        padding: 0 10px 0 10px;
+        height: 100%;
+        width: 25px;
+        @include hoverable;
+    }
 
     .UserName{
         position: relative;
@@ -32,7 +39,7 @@
         @include hoverable;
     }
 
-    .Date {
+    .label {
         padding: 0 1rem;
         position: absolute;
         align-items: center;
@@ -40,7 +47,6 @@
         right: 0;
         transform: translate(0, -50%);
         white-space: nowrap;
-        // font-weight: bold;
 
         &.label-profile {
             @include hoverable;
@@ -78,14 +84,12 @@
             overflow: hidden;
             max-width: 0;
             opacity: 0;
-            background-color: rgba(rgb(39, 39, 39), .5);
-
             transition: max-width $anim-duration,
                 opacity $anim-duration,
                 background-color $anim-duration;
 
             .icon {
-                @include icon(2rem);
+                @include icon(2.4rem);
                 margin: auto 0.5rem;
                 background-position: center;
                 background-size: cover;
@@ -108,7 +112,7 @@
                 transition: opacity $anim-duration;
                 border-radius: 10px;
                 width: 15%;
-                // transition: .6s;
+                transition: .6s;
             }
 
             &:hover{
@@ -117,9 +121,10 @@
                 }
             }
 
-            &.focus {
+            &.active {
                 max-width: 4.2rem;
                 opacity: 1;
+
                 &:after {
                     opacity: 1;
                 }
