@@ -27,9 +27,7 @@ function Timer(){
 
     return(
         <div className="label Date">
-            <div>
-                {GetDate()}
-            </div>
+            {GetDate()}
         </div>
     );
 }

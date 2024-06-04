@@ -10,13 +10,21 @@
     justify-content: center;
     //   background-color: rgba(black, .2);
     background-color: rgba(51, 51, 51, 0.6);
-    backdrop-filter: saturate(180%) blur(40px);
     font-size: $font-size-normal;
     color: #ffff;
     font-family: NotoSansKR, sans-serif;
     font-weight: 550;
+    z-index: 9999999999999999;
+    
+    &::before{
+        content: " ";
+        position: absolute;
+        inset: 0;
+        backdrop-filter: saturate(180%) blur(40px);
+        z-index: -1;
+    }
 
-    .Menu{
+    .MenuIcon{
         position: relative;
         display: flex;
         align-items: center;
