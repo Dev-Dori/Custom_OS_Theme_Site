@@ -5,7 +5,8 @@ import { Icon } from 'components';
 import { useContext, useEffect, useState } from 'react';
 import { useSearchParams,useNavigate } from 'react-router-dom'
 import './style.scss'
-import { ComingSoon, DirectoryExtension } from 'windows';
+import DirectoryExtension from './DirectoryExtension.js'
+import { ComingSoon } from 'windows';
 import { LuFolderRoot as Root ,LuFolderOpenDot as Home,LuFolderHeart as Applications, LuMonitorCheck as Desktop, LuFile as Documents,LuFolderDown as Download, LuMusic4 as Music, LuTrash2 as Trash, LuFolderOpen as Folder} from "react-icons/lu";
 import { LuChevronDown as ArrowDown, LuChevronRight as ArrowRight } from "react-icons/lu";
 
