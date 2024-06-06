@@ -58,15 +58,15 @@ function Screen(){
         }
         apps[key].focused = focused; // 무한반복을 방지하기 위함
     }
-
+    
     return (
         <DeviceClassification.Provider value={mobile}>
             <FileSystemContext.Provider value={[FileSystem, ()=>{setReload(reload+1)}]}>
                 {FileSystem.key.length>0&&(
                     <div className='Screen'>
                         <Wallpaper />
-                        <Taskbar />
                         <Desktop />
+                        <Taskbar />
                     </div>
                 )}
             </FileSystemContext.Provider>
