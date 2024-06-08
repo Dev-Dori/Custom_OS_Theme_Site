@@ -15,12 +15,12 @@ function Taskbar(){
     const apps = FileSystem.GetApps();
     return (
         <div className="Taskbar">
-            <Menu />
+            <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
             <div className='UserName'>DevDori</div>
             <div className='shortcut-container'>
                 {apps&&Object.keys(apps).filter(key=>apps[key].opened).map(key=>( //|| apps[key].PinTaskbar
                         <Link key={'shortcut-'+key} className={classes('shortcut','pinned',apps[key].opened&&'active')}
-                            to={key===currentUrl.split("/")[1]?"/":key}>
+                            to={!menuOpen&&key===currentUrl.split("/")[1]?"/":key}>
                             <Icon iconKey={key} iconUrl={apps[key].icon}/>
                         </Link>
                     )
