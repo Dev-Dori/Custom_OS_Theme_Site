@@ -6,10 +6,14 @@ import './style.scss'
 
 function Menu({menuOpen, setMenuOpen}){
     const [location, setLocation] = useState(useLocation())
-    if(useLocation() !== location){
-        setMenuOpen(false)
-        setLocation(useLocation())
-    }   
+    const prelocation = useLocation()
+
+    useEffect(()=>{
+        if(prelocation !== location){
+            setMenuOpen(false)
+            setLocation(prelocation)
+        }
+    })
 
     return(
         <>
