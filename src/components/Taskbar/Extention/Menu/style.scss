@@ -9,8 +9,8 @@
     backdrop-filter: saturate(180%) blur(40px);
 
     .Search-Box{
-        position: absolute;
-        top: 20px;
+        position: relative;
+        margin: 20px 0 20px 0;
         left: 50%;
         transform: translateX(-50%);
         height: 1.75rem;
@@ -31,6 +31,24 @@
         
         *{
             padding: 0 5px 0 5px;
+        }
+    }
+
+    .Application-Box{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(110px, max-content));
+        grid-gap: 80px;
+        justify-content: center;
+
+        div{
+            text-align: center;
+        }
+        
+        .icon{
+            height: 7rem;
+            width: 7rem;
+            background-position: center;
+            background-size: cover;
         }
     }
 }
