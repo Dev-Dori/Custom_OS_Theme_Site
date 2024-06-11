@@ -22,7 +22,6 @@ function FileManager(props){
     const homeDir = "/users/DevDori/"
     const SideBarIcon = {Applications:Applications, Desktop:Desktop, Downloads:Download, Documents:Documents, Music:Music, Trash:Trash}
     const searchResult = search && FileSystem.Search(search)
-    
 
     if(Object.keys(searchResult).length===1 && workDir !==`/${Object.values(searchResult)[0].GetWorkDir().join("/")}/`){
         setWorkDir(`/${Object.values(searchResult)[0].GetWorkDir().join("/")}/`)
@@ -57,8 +56,8 @@ function FileManager(props){
         return tmpdir
     }
     
-    const workDirList = getListSegments(getAbsolutePath(workDir)) instanceof Dir ? getListSegments(getAbsolutePath(workDir)) : getListSegments(getAbsolutePath(workDir)).parent
-    console.log(dirHistory)
+    const filelist = search?FileSystem.Search(search):getListSegments(getAbsolutePath(workDir)).children;
+    console.log(filelist)
     return(
         <Window 
         Update = {Update}
@@ -68,8 +67,6 @@ function FileManager(props){
             <div className='FileManager-Body'>
                 <div className='SideBar'>
                     <input  type="text" className='FileManager-Search' placeholder='🔍 Search'
-                            // key={workDir}
-                            // defaultValue={search}
                             onFocus={(event)=>{setSearch(event.target.value)}}
                             onKeyUp={(event)=>{event.target.value?setSearch(event.target.value):setWorkDir(dirHistory.at(-1))||setSearch(event.target.value)}}
                         />
@@ -89,29 +86,28 @@ function FileManager(props){
                             <div className='Group-Title'>Libraries</div>      
 
                             {getListSegments(getAbsolutePath(homeDir)).key.map(app=>{
-                                    const target = getListSegments(getAbsolutePath(homeDir)).children[app]
-                                    const AppSideBarIcon = SideBarIcon[app]
-                                    return( 
-                                        <div    className={`FileManager-Directory`}
-                                                key={`FileManager-Directory-${app}`} 
-                                                app={`FileManager-Directory-${app}`}
-                                                onClick={()=>setSearch("")}
-                                                >
+                                const target = getListSegments(getAbsolutePath(homeDir)).children[app]
+                                const AppSideBarIcon = SideBarIcon[app]
+                                return( 
+                                   <div className={`FileManager-Directory`}
+                                        key={`FileManager-Directory-${app}`} 
+                                        app={`FileManager-Directory-${app}`}
+                                        onClick={()=>setSearch("")}>
 
-                                                <div className={`item ${!search&&([homeDir+app,homeDir+app+"/"].includes(workDir))&&"focused"}`}
-                                                    onClick={()=>setWorkDir(workDir.startsWith(`${homeDir}${app}/`)?`${homeDir}${app}`:`${homeDir}${app}/`)||setDirHistory(dirHistory.concat(workDir.startsWith(`${homeDir}${app}/`)?`${homeDir}${app}`:`${homeDir}${app}/`))}>
-                                                    {target.key.length>0&&(workDir.startsWith(`${homeDir}${app}/`)?
-                                                                                <ArrowDown className='Arrow'/>
-                                                                                :
-                                                                                <ArrowRight className='Arrow'/>)}
+                                        <div className={`item ${!search&&([homeDir+app,homeDir+app+"/"].includes(workDir))&&"focused"}`}
+                                            onClick={()=>setWorkDir(workDir.startsWith(`${homeDir}${app}/`)?`${homeDir}${app}`:`${homeDir}${app}/`)||setDirHistory(dirHistory.concat(workDir.startsWith(`${homeDir}${app}/`)?`${homeDir}${app}`:`${homeDir}${app}/`))}>
+                                            {target.key.length>0&&(workDir.startsWith(`${homeDir}${app}/`)?
+                                                                        <ArrowDown className='Arrow'/>
+                                                                        :
+                                                                        <ArrowRight className='Arrow'/>)}
 
-                                                    {(AppSideBarIcon&&<AppSideBarIcon/>)||<Folder/>} {app}
-                                                </div>
-                                                    {target.key.length>0&&
-                                                    (workDir.startsWith(`${homeDir}${app}/`))&&
-                                                    <DirectoryExtension Directory={target} workDir={workDir} setWorkDir={setWorkDir} pwd={`${homeDir}${app}/`} />}
+                                            {(AppSideBarIcon&&<AppSideBarIcon/>)||<Folder/>} {app}
                                         </div>
-                                    )
+                                            {target.key.length>0&&
+                                            (workDir.startsWith(`${homeDir}${app}/`))&&
+                                            <DirectoryExtension Directory={target} workDir={workDir} setWorkDir={setWorkDir} pwd={`${homeDir}${app}/`} />}
+                                   </div>
+                                )
                             })}
                             
                         </div>
@@ -120,64 +116,35 @@ function FileManager(props){
 
                 </div>
                 <div className='Contents'>
-                    {/* <input type="text" className='Directory-Path' key={workDir} defaultValue={workDir} 
-                           onKeyUp={(event)=>{
-                            if(event.key==="Enter"&&getListSegments(getAbsolutePath(event.target.value))){
-                                setWorkDir(event.target.value)
-                            }}}
-                            /> */}
-
                     {
-                    !search?
-                        workDirList instanceof Dir && workDirList.key.length===0?
-                            (<div className='FileManager-Empty'>This Folder is Empty</div>)
-                            :
-                            workDirList.key.map(app=>{
-                                return(
-                                <div app={`FileManager-InnerFile-${app}`} 
-                                    key={`FileManager-InnerFile-${app}`}
-                                    className={'FileManager-InnerFile'}
-                                        onClick={()=>{
-                                            console.log(`${workDir}${app}/`)
-                                            const target = workDirList.children[app]
-                                            if(target instanceof Dir){
-                                                const path = `/${target.GetWorkDir().join("/")}/`
-                                                setWorkDir(path)
-                                                setDirHistory(dirHistory.concat(path))
-                                                setSearch("")
-                                            }else if(target instanceof App) navigate(app)
-                                            else if(target instanceof SymbolicLink) navigate(target.name)
-                                            else if(target instanceof LinkFile) window.open(target.href)
-                                        }
-                                }>
-                                    <Icon iconUrl={workDirList.children[app].icon}/>
-                                    <div className='FileName'>{app}</div>
-                                </div>)
-                            })
-
-                        :
-                        Object.keys(searchResult).map(app=>{
+                        Object.keys(filelist).length>0?
+                        Object.keys(filelist).map(key=>{
                             return(
-                                <div app={`FileManager-InnerFile-${app}`} 
-                                     key={`FileManager-InnerFile-${app}`}
-                                     className={'FileManager-InnerFile'}
-                                     onClick={()=>{
-                                        const target = searchResult[app]
+                                <div app={`FileManager-InnerFile-${key}`} 
+                                    key={`FileManager-InnerFile-${key}`}
+                                    className={'FileManager-InnerFile'}
+                                    onClick={()=>{
+                                        console.log(`${workDir}${key}/`)
+                                        const target = filelist[key]
                                         if(target instanceof Dir){
                                             const path = `/${target.GetWorkDir().join("/")}/`
                                             setWorkDir(path)
                                             setDirHistory(dirHistory.concat(path))
                                             setSearch("")
-                                        }else if(target instanceof App) navigate(app)
+                                        }else if(target instanceof App) navigate(key)
                                         else if(target instanceof SymbolicLink) navigate(target.name)
                                         else if(target instanceof LinkFile) window.open(target.href)
-                                    }}>
-
-                                    <Icon iconUrl={searchResult[app].icon}/>
-                                    <div className='FileName'>{app}</div>
+                                    }
+                                }>
+                                    <Icon iconUrl={filelist[key].icon}/>
+                                    <div className='FileName'>{key}</div>
                                 </div>
                             )
                         })
+                        :
+                        <div className='FileManager-Empty'>
+                            {search?"Couldn't find your Search":"This Folder is Empty"}
+                        </div>
                     }
                 </div>
             </div>
