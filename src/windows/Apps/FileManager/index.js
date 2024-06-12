@@ -7,8 +7,8 @@ import { useSearchParams,useNavigate } from 'react-router-dom'
 import './style.scss'
 import DirectoryExtension from './DirectoryExtension.js'
 import { ComingSoon } from 'windows';
-import { LuFolderRoot as Root ,LuFolderOpenDot as Home,LuFolderHeart as Applications, LuMonitorCheck as Desktop, LuFile as Documents,LuFolderDown as Download, LuMusic4 as Music, LuTrash2 as Trash, LuFolderOpen as Folder} from "react-icons/lu";
-import { LuChevronDown as ArrowDown, LuChevronRight as ArrowRight } from "react-icons/lu";
+import { LuFolderRoot as Root ,LuFolderOpenDot as Home} from "react-icons/lu";
+import { event } from 'jquery';
 
 function FileManager(props){
     const { Update, app } = props;
@@ -20,7 +20,6 @@ function FileManager(props){
     const navigate = useNavigate();
     const user = "DevDori"
     const homeDir = "/users/DevDori/"
-    const SideBarIcon = {Applications:Applications, Desktop:Desktop, Downloads:Download, Documents:Documents, Music:Music, Trash:Trash}
     const searchResult = search && FileSystem.Search(search)
 
     if(Object.keys(searchResult).length===1 && workDir !==`/${Object.values(searchResult)[0].GetWorkDir().join("/")}/`){
@@ -30,7 +29,6 @@ function FileManager(props){
     useEffect(()=>{
         const path = serchParams.get("path")
         if(path&& getListSegments(getAbsolutePath(path))) setWorkDir(`/${getAbsolutePath(path).join("/")}/`)
-        window.history.pushState({page:1},{page:1},window.location.href.split("?")[0])
     },[])
 
     const getAbsolutePath=(path)=>{
@@ -57,7 +55,7 @@ function FileManager(props){
     }
     
     const filelist = search?FileSystem.Search(search):getListSegments(getAbsolutePath(workDir)).children;
-    console.log(filelist)
+
     return(
         <Window 
         Update = {Update}
@@ -67,49 +65,28 @@ function FileManager(props){
             <div className='FileManager-Body'>
                 <div className='SideBar'>
                     <input  type="text" className='FileManager-Search' placeholder='🔍 Search'
-                            onFocus={(event)=>{setSearch(event.target.value)}}
-                            onKeyUp={(event)=>{event.target.value?setSearch(event.target.value):setWorkDir(dirHistory.at(-1))||setSearch(event.target.value)}}
+                            onFocus={(event)=>setSearch(event.target.value)}
+                            onKeyUp={(event)=>{event.target.value?setSearch(event.target.value):setWorkDir(dirHistory.at(-1))||setSearch("")}}
                         />
 
                     <div className='SideBar-Group'>
-                        <div className='Directory-Group'>        
+                        <div className='Directory-Group' onClick={()=>window.scrollTo(0, 0)}>        
                             <div className='Group-Title'>Base</div>                
                             <div className={`FileManager-Directory ${!search&&workDir==="/"&&"focused"}`} onClick={()=>setWorkDir("/")||setSearch("")}>                        
-                                <div className='item'><Root/> Root</div>
+                                <div className='item'><Root/> <div className='ObjectName'>Root</div></div>
                             </div>
                             <div className={`FileManager-Directory ${!search&&workDir===homeDir&&"focused"}`} onClick={()=>setWorkDir(homeDir)||setSearch("")}>
-                                <div className='item'><Home/> Home</div>
+                                <div className='item'><Home/> <div className='ObjectName'>Home</div></div>
                             </div>
                         </div>
 
-                        <div className='Directory-Group HomeDir'>  
+                        <div className='Directory-Group HomeDir' onClick={()=>setSearch("")}>  
                             <div className='Group-Title'>Libraries</div>      
-
-                            {getListSegments(getAbsolutePath(homeDir)).key.map(app=>{
-                                const target = getListSegments(getAbsolutePath(homeDir)).children[app]
-                                const AppSideBarIcon = SideBarIcon[app]
-                                return( 
-                                   <div className={`FileManager-Directory`}
-                                        key={`FileManager-Directory-${app}`} 
-                                        app={`FileManager-Directory-${app}`}
-                                        onClick={()=>setSearch("")}>
-
-                                        <div className={`item ${!search&&([homeDir+app,homeDir+app+"/"].includes(workDir))&&"focused"}`}
-                                            onClick={()=>setWorkDir(workDir.startsWith(`${homeDir}${app}/`)?`${homeDir}${app}`:`${homeDir}${app}/`)||setDirHistory(dirHistory.concat(workDir.startsWith(`${homeDir}${app}/`)?`${homeDir}${app}`:`${homeDir}${app}/`))}>
-                                            {target.key.length>0&&(workDir.startsWith(`${homeDir}${app}/`)?
-                                                                        <ArrowDown className='Arrow'/>
-                                                                        :
-                                                                        <ArrowRight className='Arrow'/>)}
-
-                                            {(AppSideBarIcon&&<AppSideBarIcon/>)||<Folder/>} {app}
-                                        </div>
-                                            {target.key.length>0&&
-                                            (workDir.startsWith(`${homeDir}${app}/`))&&
-                                            <DirectoryExtension Directory={target} workDir={workDir} setWorkDir={setWorkDir} pwd={`${homeDir}${app}/`} />}
-                                   </div>
-                                )
-                            })}
-                            
+                            <DirectoryExtension 
+                                Directory={getListSegments(getAbsolutePath(homeDir))} 
+                                workDir={workDir} setWorkDir={(path)=>{setWorkDir(path)||setDirHistory(dirHistory.concat(path))}} 
+                                pwd={`${homeDir}`}
+                            />
                         </div>
 
                     </div>
@@ -121,10 +98,9 @@ function FileManager(props){
                         Object.keys(filelist).map(key=>{
                             return(
                                 <div app={`FileManager-InnerFile-${key}`} 
-                                    key={`FileManager-InnerFile-${key}`}
-                                    className={'FileManager-InnerFile'}
-                                    onClick={()=>{
-                                        console.log(`${workDir}${key}/`)
+                                     key={`FileManager-InnerFile-${key}`}
+                                     className={'FileManager-InnerFile'}
+                                     onClick={()=>{
                                         const target = filelist[key]
                                         if(target instanceof Dir){
                                             const path = `/${target.GetWorkDir().join("/")}/`
@@ -134,7 +110,7 @@ function FileManager(props){
                                         }else if(target instanceof App) navigate(key)
                                         else if(target instanceof SymbolicLink) navigate(target.name)
                                         else if(target instanceof LinkFile) window.open(target.href)
-                                    }
+                                     }
                                 }>
                                     <Icon iconUrl={filelist[key].icon}/>
                                     <div className='FileName'>{key}</div>
