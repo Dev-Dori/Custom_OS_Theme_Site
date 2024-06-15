@@ -7,7 +7,7 @@ import { Icon } from 'components';
 import * as IconMap from 'images';
 import './style.scss';
 
-function Window({Contents, Update, app}){
+function Window({Contents, Update, app, Toolbar=undefined}){
     const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
     const mobile = useContext(DeviceClassification);
     const {key,focused, zIndex} = app;
@@ -83,12 +83,19 @@ function Window({Contents, Update, app}){
                     window.addEventListener('mouseup', onMouseUp);
                 }}>
 
-                <div className='info-container'>
-                    <div className='image'><Icon iconUrl={app.icon}/></div>
-                    <div className='title'>
-                        <div className="name">{app.key}</div>
-                    </div>
-                </div>
+                    {!Toolbar ?
+                        (<div className='info-container'>
+                                        <div className='image'><Icon iconUrl={app.icon}/></div>
+                                        <div className='title'>
+                                            <div className="name">{app.key}</div>
+                                        </div>
+                        </div>
+                        )
+                        :
+                        <>
+                            {Toolbar}
+                        </>
+                    }
                 
                 <div className="button-container" style={{filter:!focused&&"grayscale(100%)"}}>
                     <Link className="button button-close" to="/" onClick={() => {app.positionX=left;app.positionY=top;Update({ closing: true })}}>
