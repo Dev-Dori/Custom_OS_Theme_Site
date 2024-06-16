@@ -2,8 +2,7 @@
 
 .Taskbar {
     position: relative;
-    // height: $taskbar-height;
-    height: 3rem;
+    height: $taskbar-height;
     display: flex;
     align-items: stretch;
     box-sizing: border-box;

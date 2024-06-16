@@ -1,34 +1,63 @@
+@import "../../../../common/constants";
+
 .Menu{
     // color: white;
     position: fixed;
     width: 100%;
-    height: 100%;
+    // height: 100%;
+    height: calc(100% - $taskbar-height);
     top: 0;
     left: 0;
     bottom: 0;
     backdrop-filter: saturate(180%) blur(40px);
+    text-shadow: .5px .5px .5px gray;
+    animation: 0.3s opening;
+    overflow: auto;
+
+    .interceptor{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        z-index: -1;
+    }
 
     .Search-Box{
         position: relative;
-        margin: 20px 0 20px 0;
+        margin: 40px 0 30px 0;
         left: 50%;
         transform: translateX(-50%);
-        height: 1.75rem;
-        width: 16rem;
+        height: 1.9rem;
+        width: 17rem;
         border-radius: .375rem;
         background-color: #e5e7eb1a;
         border: 1px solid #e5e7eb4d;
         display: flex;
         align-items: center;
-        
+        box-shadow: .5px .5px .5px gray;
+
+        box-sizing: border-box;
+        transition: .25s;
+
+        &:focus-within{
+            padding-left: 0%;
+        }
+        padding-left: 6.5rem;
+
         .Search{
             background-color: transparent;
             border: 0px;
             color: white;
             outline: none;
             width: 100%;
+
+            &::placeholder{
+                color: white;
+            }
         }
         
+        
+
         *{
             padding: 0 5px 0 5px;
         }
@@ -39,7 +68,8 @@
         grid-template-columns: repeat(auto-fit, minmax(110px, max-content));
         grid-gap: 80px;
         justify-content: center;
-
+        padding: 5px 17px 5px 17px;
+        
         div{
             text-align: center;
         }
