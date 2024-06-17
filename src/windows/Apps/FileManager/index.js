@@ -6,9 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useSearchParams,useNavigate } from 'react-router-dom'
 import './style.scss'
 import DirectoryExtension from './DirectoryExtension.js'
-import { ComingSoon } from 'windows';
 import { LuFolderRoot as Root ,LuFolderOpenDot as Home} from "react-icons/lu";
-import { event } from 'jquery';
 
 function FileManager(props){
     const { Update, app } = props;
@@ -28,7 +26,10 @@ function FileManager(props){
 
     useEffect(()=>{
         const path = serchParams.get("path")
-        if(path&& getListSegments(getAbsolutePath(path))) setWorkDir(`/${getAbsolutePath(path).join("/")}/`)
+        const target = getListSegments(getAbsolutePath(path))
+        if(path&&target&&target instanceof Dir) setWorkDir(`/${getAbsolutePath(path).join("/")}/`)
+        else if(target instanceof App) navigate(target.GetName())
+        else if(target instanceof SymbolicLink) navigate(target.name)
     },[])
 
     const getAbsolutePath=(path)=>{

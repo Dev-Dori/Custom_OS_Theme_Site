@@ -1,21 +1,20 @@
-import { FileSystemContext } from 'contexts'
-import { useRef, useEffect } from 'react';
-import { useSearchParams,useNavigate } from 'react-router-dom'
-import { LuFolderRoot as Root ,LuFolderOpenDot as Home,LuFolderHeart as Applications, LuMonitorCheck as Desktop, LuFile as Documents,LuFolderDown as Download, LuMusic4 as Music, LuTrash2 as Trash, LuFolderOpen as Folder, LuAppWindow as AppFile} from "react-icons/lu";
-import { App, Dir, LinkFile, SymbolicLink, SystemDir } from 'beans';
+import { DeviceClassification } from 'contexts'
+import { useRef, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom'
+import { LuFolderHeart as Applications, LuMonitorCheck as Desktop, LuFile as Documents,LuFolderDown as Download, LuMusic4 as Music, LuTrash2 as Trash, LuFolderOpen as Folder, LuAppWindow as AppFile} from "react-icons/lu";
+import { App, Dir, LinkFile, SymbolicLink } from 'beans';
 import { LuChevronDown as ArrowDown, LuChevronRight as ArrowRight} from "react-icons/lu";
 
 function DirectoryExtension({Directory, workDir, setWorkDir, pwd}){
     const navigate = useNavigate();
     const Ref = useRef(null);
     const SideBarIcon = {Applications:Applications, Desktop:Desktop, Downloads:Download, Documents:Documents, Music:Music, Trash:Trash}
-
+    const mobile = useContext(DeviceClassification)
     const key = Directory.key;
     const children = Directory.children;
     
     useEffect(()=>{
-        if(Ref.current) Ref.current.scrollIntoView({block: "start", inline:"start", behavior: "smooth"});
-        console.log(Ref)
+        if(Ref.current && !mobile) Ref.current.scrollIntoView({block: "center", inline:"start", behavior: "smooth"});
     })
 
     return (
