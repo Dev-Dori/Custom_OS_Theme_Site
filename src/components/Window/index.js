@@ -82,35 +82,36 @@ function Window({Contents, Update, app, Toolbar=undefined}){
                     window.addEventListener('mousemove', onMouseMove);
                     window.addEventListener('mouseup', onMouseUp);
                 }}>
-
-                    {!Toolbar ?
-                        (<div className='info-container'>
-                                        <div className='image'><Icon iconUrl={app.icon}/></div>
-                                        <div className='title'>
-                                            <div className="name">{app.key}</div>
-                                        </div>
-                        </div>
-                        )
-                        :
-                        <>
-                            {Toolbar}
-                        </>
-                    }
-                
+            
                 <div className="button-container" style={{filter:!focused&&"grayscale(100%)"}}>
-                    <Link className="button button-close" to="/" onClick={() => {app.positionX=left;app.positionY=top;Update({ closing: true })}}>
-                        <img className="normal" alt='close' src={IconMap.Close}/>
-                        <img className="hover"  alt='close' src={IconMap.HoverClose}/>
+                    <Link className="button button-close" to="/" onClick={() => {app.positionX=left;app.positionY=top;Update({ closing: true })}} draggable="false">
+                        <img className="normal" alt='close' src={IconMap.Close} draggable="false"/>
+                        <img className="hover"  alt='close' src={IconMap.HoverClose} draggable="false"/>
                     </Link>
-                    <Link className="button button-minimize" to="/" onClick={e=>{setMinimized(true)}}>
-                        <img className="normal" alt='Minimize' src={IconMap.Minimize}/>
-                        <img className="hover"  alt='Minimize' src={IconMap.Hoverminimize}/>
+                    <Link className="button button-minimize" to="/" onClick={e=>{setMinimized(true)}} draggable="false">
+                        <img className="normal" alt='Minimize' src={IconMap.Minimize} draggable="false"/>
+                        <img className="hover"  alt='Minimize' src={IconMap.Hoverminimize} draggable="false"/>
                     </Link>
-                    <div className="button button-maximize" onClick={e=>{setMaximized([!maximized,fix_maximized])}}>
-                        <img className="normal" alt='maximized' src={IconMap.Maximize}/>
-                        <img className="hover"  alt='maximized' src={IconMap.HoverMaximize}/>
+                    <div className="button button-maximize" onClick={e=>{setMaximized([!maximized,fix_maximized])}} draggable="false">
+                        <img className="normal" alt='maximized' src={IconMap.Maximize} draggable="false"/>
+                        <img className="hover"  alt='maximized' src={IconMap.HoverMaximize} draggable="false"/>
                     </div>
                 </div>
+
+                {!Toolbar ?
+                    (<div className='info-container'>
+                                    <div className='image'><Icon iconUrl={app.icon}/></div>
+                                    <div className='title'>
+                                        <div className="name">{app.key}</div>
+                                    </div>
+                    </div>
+                    )
+                    :
+                    <>
+                        {Toolbar}
+                    </>
+                }
+                
             </div>
 
             {/* ############    Contents     ############ */}

@@ -111,14 +111,17 @@
     background-color: rgb(229, 231, 235);
     box-shadow: 0px -2px 0px 0px rgba(226, 233, 234, 0.8) inset;
 
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    display: grid;
+    grid-template-columns: 100px auto;
+    grid-template-rows: minmax($toolbar-height, auto) auto;
+    flex-direction: row;
     overflow: hidden;
     // height: 29px;
     height: fit-content;
-    min-height: 1.9rem;
+    min-height: $toolbar-height;
     position: relative;
-    align-items: center;
+    // align-items: center;
 
     .info-container{
       display: flex;
@@ -126,6 +129,9 @@
       // padding: 0.3rem 0.2rem;
       padding: .3rem;
       box-sizing: border-box;
+      width: 100%;
+      justify-content: center;
+      position: absolute;
 
       .image{
         margin-right: 5px;
@@ -155,11 +161,12 @@
     }
     
     .button-container {
-      position: absolute;
+      position: relative;
       left: 0;
       display: flex;
       height: 100%;
-
+      z-index: 1;
+      
       .button {
         display: flex;
         align-items: center;
@@ -168,9 +175,9 @@
         color: rgb(0, 0, 0);
         font-size: medium;
         // padding: 8px;
-        padding: 0 0.25em;
-        border-radius: 4pt;
-        margin: 0px 3px 0 3px;
+        padding: 0 0.3em;
+        // border-radius: 4pt;
+        // margin: 0px 3px 0 3px;
         transition: background-color $anim-duration;
 
 
