@@ -285,15 +285,15 @@ function Terminal({app, Update}){
                     <span>{user}@W0R!D:{workDir.replace("/users/"+user,"~")}$ </span>
                     {command.split('').map((char,index)=><span className={`input-char ${index===cursorPosition&&app.focused&&"cursor"} ${cursorPosition}`} key={`input-char-${index}`}>{char}</span>)}
                     {app.focused&&cursorPosition===command.length&&<span className='cursor'> </span>}
+                    {mobile&&(<textarea type="text" className='mobile-terminal-input'
+                                    onKeyUp={(event)=>{
+                                                setCommand(event.key!=="Enter"?event.target.value:event.target.value="");
+                                                setCursorPosition(event.key!=="Enter"?event.target.value.length:0);
+                                            }}
+                                    autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" autoFocus={true}
+                                />
+                            )}
                 </div>
-                {mobile&&(<input type="text" className='mobile-terminal-input'
-                                 onKeyUp={(event)=>{
-                                            setCommand(event.key!=="Enter"?event.target.value:event.target.value="");
-                                            setCursorPosition(event.key!=="Enter"?event.target.value.length:0);
-                                        }}
-                                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" autoFocus={true}
-                            />
-                         )}
             </div>
         )}
     />);
