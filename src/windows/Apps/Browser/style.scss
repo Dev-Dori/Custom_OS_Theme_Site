@@ -3,7 +3,6 @@
 .Browser-Tab-Container{
     color: white;
     display: flex;
-    background-image: linear-gradient(to top, #2f3437 50%, rgba(229, 231, 235, 0) 50%);
     width: fit-content;
     padding-top: 4px;
     box-sizing: border-box;
@@ -12,33 +11,105 @@
     font-family: "Fira Mono", Consolas, Menlo, Monaco, "Courier New", Courier, monospace;
     font-weight: normal;
 
-    .Browser-Title{
-        background-color: #2f3437;
-        padding: 0px 15px 0px 15px;
+    position: relative;
+
+    .Tab{
+        display: flex;
+        position: relative;
+        align-items: center;
         height: 100%;
-        width:100px;
-        border-radius: 10px 10px 0px 0px;
+        margin: 0 -5px;
+        z-index: 2;
+        .Tab-Info{
+            border-radius: 10px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+            .Tab-Title{
+                color: black;
+                height: 100%;
+                width:80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+        
+                padding: 0px 20px 0px 10px;
+                line-height: 25px;
+                align-items: center;
+            }
+        
+            svg{
+                @include hoverable;
+                padding: 1.5px;
+                height: 1rem;
+                width: 1rem;
+                fill: black;
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translate(0, -50%);
+                border-radius: 30px;
+                z-index: 3;
+            }
+            &:before,&:after{
+                content: "";
+                width: 10px;
+                height: 70%;
+                box-sizing: border-box;
+            }
 
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+            &:after{
+                border-right: 2px solid rgb(174 176 177 / 54%);
+                // border-right: 2px solid rgb(47 52 55);
+            }
+
+        }
+        
+        &:has(~ .Focused){
+            .Tab-Info{
+                &:after{
+                    border-right: 0;
+                }    
+            }
+        }
     }
 
-    &:before{
-        content: " ";
-        width: 20px;
-        background-color: rgb(229, 231, 235);
-        // background-color: rebeccapurple;
-        border-bottom-right-radius: 10px;
+
+    .Focused{
+        padding: 0 0 0 0;
+        z-index: 1;
+        margin: 0 -15px 0 -10px;
+        .Tab-Info{
+            border-radius: 0;
+            height: 100%;
+            background-image: linear-gradient(to top, #2f3437 50%, rgba(229, 231, 235, 0) 10%);
+            .Tab-Title{
+                color: white;
+                width:85px;
+                background-color: #2f3437;
+                border-radius: 10px 10px 0 0;
+                border-right: 0;
+            }
+            svg{
+                fill: white;
+                right: 15px;
+            }   
+            &:before,&:after{
+                background-color: rgb(229, 231, 235);
+                height: 100%;
+                border-right: 0px;
+            }
+            &:before{
+                border-bottom-right-radius: 10px;
+            }
+            &:after{
+                border-bottom-left-radius: 10px;
+            }
+
+        }
     }
 
-    &:after{
-        content: " ";
-        width: 20px;
-        background-color: rgb(229, 231, 235);
-        // background-color: rebeccapurple;
-        border-bottom-left-radius: 10px;
-    }
 }
 .Browser-ToolBar-Container{
     color: white;
@@ -46,6 +117,7 @@
     grid-column: 1 / span 2;
     height: 2.2rem;
     display: flex;
+    place-items: center;
     .Browser-Button-Container{
         height: 100%;
         width: 100px;
@@ -57,32 +129,48 @@
         place-items: center;
 
         justify-content: space-around;
-        margin-right: 2px;
         
         svg{
             @include hoverable;
+            border-radius: 50%;
+            padding: 3px;
             height: 20px;
             width: 20px;
             fill: rgb(240, 240, 240);
         }
     }
 
-    .Browser-Search-Container{
+    .Browser-AddressBar{
         width: 100%;
-        padding: 0px 10px 0px 10px;
+        height: 100%;
+        margin: 0px 5px;
         display: flex;
         align-items: center;
 
         input{
-            outline: none;
             background-color: #0000004b;
+            border-radius: 7px;
+            outline: none;
             border: 0px;
             color: white;
             width: 100%;
             height: 70%;
-            border-radius: 10px;
-            padding-left: 10px;
+            padding-left: 7px;
         }
+    }
+
+    .NewTab{
+        margin: 0px 10px 0px 5px;
+        background-color: rgb(255 255 255 / 11%);
+        color: white;
+        text-decoration: none;
+        height: 70%;
+        padding: 0px 5px 0px 5px;
+        font-size: .8rem;
+        white-space: nowrap;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
     }
 }
 

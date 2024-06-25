@@ -1,13 +1,15 @@
 import { Window } from 'components';
-import { ComingSoon } from 'windows';
-import { Arrow, Refresh } from './NavigationIcons'
+import { Arrow, Refresh, Close } from './NavigationIcons'
 import './style.scss'
 
-function Browser(props){
-    const { Update, app} = props;
+function Browser(props, url_path){
+    const {Update, app} = props;
     let WindowSize = {WindowHeight:450, WindowWidth:700};
-    // return(<ComingSoon Update={Update} app={app}/>)
 
+    // const url=url_path.length?url_path:"https://www.google.com/webhp?igu=1";
+    const url=url_path.length?url_path:"https://blog.devdori.com/";
+    // const url=url_path.length?url_path:"https://github.com/dev-dori";
+    
     return(
         <Window 
         Update = {Update}
@@ -15,12 +17,23 @@ function Browser(props){
         WindowSize = {WindowSize}
         ClassName='Window Browser'
         Toolbar={(
-            <>
             <div className="Browser-Tab-Container">
-                <div className='Browser-Title'>
-                    Blog
+                <div className='Tab Focused'>
+                    <div className='Tab-Info'>
+                        <div className='Tab-Title'>Blog</div>
+                        <Close/>
+                    </div>
+                </div>
+                <div className='Tab'>
+                    <div className='Tab-Info'>
+                        <div className='Tab-Title'>TestTab google</div>
+                        <Close/>
+                    </div>
                 </div>
             </div>
+        )}
+        Contents={(
+            <>
             <div className="Browser-ToolBar-Container">
                 <div className='Browser-Button-Container'>
                     <Arrow direction="left" />
@@ -28,18 +41,20 @@ function Browser(props){
                     <Refresh />
                 </div>
 
-                <div className='Browser-Search-Container'>
-                    <input type="text" value="https://blog.devdori.com/" spellcheck="false" />
+                <div className='Browser-AddressBar'>
+                    <input type="text" value={url} spellCheck="false" />                    
                 </div>
+                <a className='NewTab' href={url} target="_blank">
+                    Open in a new tab
+                </a>
             </div>
-            </>
-        )}
-        Contents={(
+
             <div className='Browser'>
                 {/* <iframe src="https://www.google.com/?igu=1"></iframe> */}
                 {/* <iframe src="https://www.notion.so/devdori/Profile-b65bbb4fbb41417ab3c616dd84c43a28?pvs=4"></iframe> */}
-                <iframe src="https://blog.devdori.com/"></iframe>
+                <iframe src={url}></iframe>
             </div>
+            </>
         )}
     />);
 }
