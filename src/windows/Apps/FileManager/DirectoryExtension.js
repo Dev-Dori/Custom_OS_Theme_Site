@@ -30,7 +30,8 @@ function DirectoryExtension({Directory, workDir, setWorkDir, pwd}){
                              onClick={()=>{
                                 if(target instanceof App) navigate(key)
                                 if(target instanceof SymbolicLink) navigate(target.name)
-                                if(target instanceof LinkFile) window.open(target.href)
+                                if(target instanceof LinkFile && target.newTab) window.open(target.href)
+                                else if(target instanceof LinkFile) navigate(`browser?url=${target.href}`)
                                 if(target instanceof Dir) setWorkDir(workDir.startsWith(`${pwd}${key}/`)?`${pwd}${key}`:`${pwd}${key}/`)
                                 }
                              }

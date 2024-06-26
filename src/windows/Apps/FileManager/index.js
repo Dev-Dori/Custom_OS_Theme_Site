@@ -2,7 +2,7 @@ import { Window } from 'components';
 import { App, Dir, LinkFile, SymbolicLink } from 'beans';
 import { FileSystemContext, DeviceClassification } from 'contexts'
 import { Icon } from 'components';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useSearchParams,useNavigate } from 'react-router-dom'
 import './style.scss'
 import DirectoryExtension from './DirectoryExtension.js'
@@ -23,14 +23,6 @@ function FileManager(props){
     if(Object.keys(searchResult).length===1 && workDir !==`/${Object.values(searchResult)[0].GetWorkDir().join("/")}/`){
         setWorkDir(`/${Object.values(searchResult)[0].GetWorkDir().join("/")}/`)
     }
-
-    useEffect(()=>{
-        const path = serchParams.get("path")
-        const target = getListSegments(getAbsolutePath(path))
-        if(path&&target&&target instanceof Dir) setWorkDir(`/${getAbsolutePath(path).join("/")}/`)
-        else if(target instanceof App) navigate(target.GetName())
-        else if(target instanceof SymbolicLink) navigate(target.name)
-    },[])
 
     const getAbsolutePath=(path)=>{
         if(!path) path=workDir;
@@ -54,6 +46,14 @@ function FileManager(props){
         })
         return tmpdir
     }
+    
+    useMemo(()=>{
+        const path = serchParams.get("path")
+        const target = getListSegments(getAbsolutePath(path))
+        if(path&&target&&target instanceof Dir) setWorkDir(`/${getAbsolutePath(path).join("/")}/`)
+        else if(target instanceof App) navigate(target.GetName())
+        else if(target instanceof SymbolicLink) navigate(target.name)
+    },[])
     
     const filelist = search?FileSystem.Search(search):getListSegments(getAbsolutePath(workDir)).children;
 
@@ -110,7 +110,8 @@ function FileManager(props){
                                             setSearch("")
                                         }else if(target instanceof App) navigate(key)
                                         else if(target instanceof SymbolicLink) navigate(target.name)
-                                        else if(target instanceof LinkFile) window.open(target.href)
+                                        else if(target instanceof LinkFile && target.newTab) window.open(target.href)
+                                        else if(target instanceof LinkFile) navigate(`browser?url=${target.href}`)
                                      }
                                 }>
                                     <Icon iconUrl={filelist[key].icon}/>
