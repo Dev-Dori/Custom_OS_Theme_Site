@@ -29,7 +29,7 @@
             .Tab-Title{
                 color: black;
                 height: 100%;
-                width:80px;
+                width:100px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -86,7 +86,7 @@
             background-image: linear-gradient(to top, #2f3437 50%, rgba(229, 231, 235, 0) 10%);
             .Tab-Title{
                 color: white;
-                width:85px;
+                width:105px;
                 background-color: #2f3437;
                 border-radius: 10px 10px 0 0;
                 border-right: 0;
@@ -160,11 +160,12 @@
     }
 
     .NewTab{
+        @include hoverable;
         margin: 0px 10px 0px 5px;
         background-color: rgb(255 255 255 / 11%);
         color: white;
         text-decoration: none;
-        height: 70%;
+        height: 71%;
         padding: 0px 5px 0px 5px;
         font-size: .8rem;
         white-space: nowrap;
