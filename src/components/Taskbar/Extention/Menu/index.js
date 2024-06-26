@@ -32,7 +32,7 @@ function Menu({menuOpen, setMenuOpen}){
                            autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"/>
                 </div>
 
-                <div className='Application-Box'>
+                <div className='Application-Box' onClick={()=>setMenuOpen(!menuOpen)}>
                     {Object.keys(app).map(key=>{
                         return (app[key] instanceof App) && (
                             <div onClick={()=>navigate(key)} key={`TaskBar-Menu-${key}`}>
