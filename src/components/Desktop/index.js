@@ -19,7 +19,22 @@ function Desktop(){
             {/* <div className="Wallpaper" style={{backgroundImage: `url(${background})`}}></div> */}
             <div className='app-container'>
                 {GetDesktop&&GetDesktop.key.map(key=>{
-                    if(!GetDesktop.children[key].href){
+                    if(GetDesktop.children[key] instanceof LinkFile){
+                        if(GetDesktop.children[key].newTab)
+                            return(
+                                <a href={GetDesktop.children[key].href} className='shortcut' id={'cortcut-'+key} key={key} target='blank'>
+                                    <Icon iconUrl={GetDesktop.children[key].icon}/>
+                                    <div className='name'>{key}</div>
+                                </a>
+                            )
+                        else
+                            return (
+                                <Link to={`browser?url=${GetDesktop.children[key].href}`} className='shortcut' id={'cortcut-'+key} key={key}>
+                                    <Icon iconUrl={GetDesktop.children[key].icon}/> 
+                                    <div className='name'>{key}</div>
+                                </Link>
+                            )
+                    }else{
                         return(
                             <Link to={GetDesktop.children[key] instanceof App || GetDesktop.children[key] instanceof SymbolicLink?
                                         GetDesktop.children[key].name
@@ -30,13 +45,6 @@ function Desktop(){
                                 <Icon iconUrl={GetDesktop.children[key].icon}/> 
                                 <div className='name'>{key}</div>
                             </Link>
-                        )
-                    }else{
-                        return(
-                            <a href={GetDesktop.children[key].href} className='shortcut' id={'cortcut-'+key} key={key} target='blank'>
-                                <Icon iconUrl={GetDesktop.children[key].icon}/>
-                                <div className='name'>{key}</div>
-                            </a>
                         )
                     }
                 })}
