@@ -41,6 +41,15 @@
                 padding: 0px 20px 0px 10px;
                 line-height: 25px;
                 align-items: center;
+
+                img{
+                    position: relative;
+                    top: 10%;
+
+                    width: 15px;
+                    height: 15px;
+                    padding-right: 5px
+                }
             }
         
             svg{

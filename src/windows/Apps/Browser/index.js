@@ -51,7 +51,10 @@ function Browser(props){
                                     setInputUrl(tabList[key].url)
                                  }}>
                                 <div className='Tab-Info'>
-                                    <div className='Tab-Title'>{tabList[key].url.replace("https://","").replace("http://","").split("/")[0]}</div>
+                                    <div className='Tab-Title'>
+                                        <img src={tabList[key].history?`${tabList[key].history[tabList[key].historyNum].split("/")[0]}//${tabList[key].history[tabList[key].historyNum].split("/")[2]}/favicon.ico`:undefined}/>
+                                        {tabList[key].url.replace("https://","").replace("http://","").split("/")[0]}
+                                    </div>
                                     <Close onClick={(e)=>{
                                             const tmpTabList={...tabList}
                                             delete tmpTabList[key]
@@ -119,6 +122,7 @@ function Browser(props){
                                     tmptabList[focusTabNum].historyNum=tmptabList[focusTabNum].history.length-1
                                     setInputUrl(tmptabList[focusTabNum].url)
                                     setTabList(tmptabList)
+                                    e.target.blur()
                                 }
                            }}
                            />                    
