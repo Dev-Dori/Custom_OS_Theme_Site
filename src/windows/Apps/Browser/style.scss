@@ -1,5 +1,9 @@
 @import "../../../common/constants";
 
+.Browser{
+    background-color: white;
+}
+
 .Browser-Tab-Container{
     color: white;
     display: flex;
@@ -66,15 +70,15 @@
 
         }
         
-        &:has(~ .Focused){
-            .Tab-Info{
-                &:after{
-                    border-right: 0;
-                }    
-            }
-        }
     }
 
+    .Focused-Left{
+        .Tab-Info{
+            &:after{
+                border-right: 0;
+            }    
+        }
+    }
 
     .Focused{
         padding: 0 0 0 0;
@@ -137,6 +141,13 @@
             height: 20px;
             width: 20px;
             fill: rgb(240, 240, 240);
+        }
+
+        .svg_disable{
+            fill:rgb(143, 143, 143);
+            &:hover, &:active {
+                background-color: transparent !important;
+            }
         }
     }
 
