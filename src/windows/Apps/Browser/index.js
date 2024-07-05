@@ -10,7 +10,7 @@ function Browser(props){
     const navigate = useNavigate();
     const [focusTabNum, setFocusTabNum] = useState(0)
     const [inputUrl, setInputUrl] = useState(serchParams.get("url") ? serchParams.get("url") : "https://www.google.com/webhp?igu=1")
-    const [tabList, setTabList] = useState({})
+    const [tabList, setTabList] = useState([])
     let WindowSize = {WindowHeight:450, WindowWidth:700};
 
     useMemo(()=>{
@@ -19,12 +19,12 @@ function Browser(props){
         if(GetUrl){
             setFocusTabNum(Object.keys(tabList).length);
             if(!(Object.keys(tabList).map(key=>tabList[key].url).includes(GetUrl)))
-                setTabList({...tabList, [Object.keys(tabList).length]:{title:"test",url:GetUrl,history:[GetUrl], historyNum:0}})
+                setTabList(tabList.concat([{title:"test",url:GetUrl,history:[GetUrl], historyNum:0}]))
             else 
                 setFocusTabNum(Object.keys(tabList).map(key=>tabList[key].url).indexOf(GetUrl))
             
         }else{
-            if(!Object.keys(tabList).length) setTabList({0:{title:"Google", url:"https://www.google.com/webhp?igu=1", history:["https://www.google.com/webhp?igu=1"],  historyNum:0}})
+            if(!Object.keys(tabList).length) setTabList([{title:"Google", url:"https://www.google.com/webhp?igu=1", history:["https://www.google.com/webhp?igu=1"],  historyNum:0}])
         }
     },[serchParams])
 
@@ -44,6 +44,7 @@ function Browser(props){
             <div className="Browser-Tab-Container">
                 {
                     Object.keys(tabList).map(key=>{
+                        let tabTitle = tabList[key].url.replace("https://","").replace("http://","").split("/")
                         return(
                             <div className={`Tab ${key==focusTabNum && "Focused"} ${key==focusTabNum-1 && "Focused-Left"}`} key={"Tab-"+key} 
                                  onClick={()=>{
@@ -53,15 +54,15 @@ function Browser(props){
                                 <div className='Tab-Info'>
                                     <div className='Tab-Title'>
                                         <img src={tabList[key].history?`${tabList[key].history[tabList[key].historyNum].split("/")[0]}//${tabList[key].history[tabList[key].historyNum].split("/")[2]}/favicon.ico`:undefined}/>
-                                        {tabList[key].url.replace("https://","").replace("http://","").split("/")[0]}
+                                        {tabTitle[tabTitle.length-1]?tabTitle[tabTitle.length-1].split("?")[0]:tabTitle[0]}
                                     </div>
                                     <Close onClick={(e)=>{
-                                            const tmpTabList={...tabList}
-                                            delete tmpTabList[key]
-                                            setTabList(tmpTabList)
-                                            setFocusTabNum(Object.keys(tmpTabList).at(-1))
-                                            e.stopPropagation()
-                                        }
+                                                const tmp = tabList.concat()
+                                                tmp.splice(key,1)
+                                                setTabList(tmp)
+                                                key==focusTabNum?setFocusTabNum(key<tmp.length?key:key-1):setFocusTabNum(focusTabNum>key?focusTabNum-1:focusTabNum);
+                                                e.stopPropagation()
+                                           }
                                     }/>
                                 </div>
                             </div> 
@@ -105,7 +106,7 @@ function Browser(props){
                                     else if(["com","net","org","kr","edu","gov","mil","kr"].some(c=>url.endsWith(`.${c}`))) return true;
                                 }
                                 if(e.target.value && e.key==="Enter"){
-                                    const tmptabList = {...tabList}
+                                    const tmptabList = tabList.concat()
                                     if(CheckDomain(e.target.value)){
                                         if(e.target.value.startsWith("https://") || e.target.value.startsWith("http"))
                                             tmptabList[focusTabNum].url=e.target.value
@@ -120,6 +121,7 @@ function Browser(props){
 
                                     tmptabList[focusTabNum].history.push(tmptabList[focusTabNum].url)
                                     tmptabList[focusTabNum].historyNum=tmptabList[focusTabNum].history.length-1
+
                                     setInputUrl(tmptabList[focusTabNum].url)
                                     setTabList(tmptabList)
                                     e.target.blur()
